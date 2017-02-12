@@ -1,0 +1,67 @@
+<div class="row text-center" ng-show="matchInfo.ready_to_start==false">
+	<span ng-show="matchDataEntry.selectRegional != ''">
+		Match Not Ready To Start.  Incomplete Data
+	</span>
+	<span ng-show="matchDataEntry.selectRegional == ''">
+		Please Select a Regional
+	</span>
+</div>
+<div class="row" ng-hide="matchInfo.ready_to_start==false">
+	<div class="col-xs-6 col-sm-2">
+		<div class="text-center match-score-box" style="background:blue;">
+			<span ng-hide="matchInfo.blue_score=='-1'">{{matchInfo.blue_score}}</span>
+			<span ng-show="matchInfo.blue_score=='-1'" ng-click="openScoreModal()">--</span>
+		</div>
+		<div class="visible-xs list-group list-group-hover"> <!--<span class="hidden-sm"> | </span><br class="visible-sm">-->
+			<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.blue" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
+				<div>{{team.team_number}}</div>
+				<div>{{team.nickname}}</div>
+			</div>
+		</div>
+	</div>
+	<div class="hidden-xs col-sm-4 list-group list-group-hover"> <!--<span class="hidden-sm"> | </span><br class="visible-sm">-->
+		<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.blue" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
+			<div>{{team.team_number}} | {{team.nickname}}</div>
+		</div>
+	</div>
+	<div class="hidden-xs col-sm-4 list-group list-group-hover">
+		<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
+			<div>{{team.team_number}} | {{team.nickname}}</div>
+		</div>
+	</div>
+	<div class="col-xs-6 col-sm-2">
+		<div class="text-center match-score-box" style="background:red;">
+			<span ng-hide="matchInfo.red_score=='-1'">{{matchInfo.red_score}}</span>
+			<span ng-show="matchInfo.red_score=='-1'" ng-click="openScoreModal()">--</span>
+		</div>
+		<div class="visible-xs list-group list-group-hover"> <!--<span class="hidden-sm"> | </span><br class="visible-sm">-->
+			<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
+				<div>{{team.team_number}}</div>
+				<div>{{team.nickname}}</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row form-group text-center" ng-show="matchDataEntry.matchStarted == false && matchDataEntry.completed">
+	<strong>
+		Cannot start collecting data.  Final match information has already been submitted.  Match is officially over.
+	</strong>
+</div>
+<div class="row form-group text-center" ng-hide="matchInfo.ready_to_start==false">
+	<div class="col-xs-12" ng-hide="matchDataEntry.matchStarted">
+		<button type="button" class="btn btn-primary btn-lg btn-block" ng-click="startMatch()" ng-disabled="matchInfo==null || matchInfo=='null' || matchDataEntry.completed" id="startTimeButton" style="margin-bottom:20px;display:block;">Start Match!</button>
+	</div>
+	<div class="col-xs-12" ng-show="matchDataEntry.matchStarted">
+		<h2 class="clearfix">
+			TIMER: {{timer | secondsToDateTime | date : 'm:ss'}} 
+			<span ng-hide="gameOver">{{gameMode}}</span>
+			<span ng-show="gameOver">Game Done!</span>
+			<!-- <button class="btn btn-xs btn-danger" ng-hide="gameOver" ng-click="stopTimer()"><i class="fa fa-times"></i></button> -->
+		</h2>
+		<!-- <h2 class="clearfix">
+			TIMER: {{globalInfo.serverTime - matchDataEntry.match_start_time | secondsToDateTime | date : 'dd:hh:m:ss'}} 
+			<span ng-hide="gameOver">{{gameMode}}</span>
+			<span ng-show="gameOver">Game Done!</span>
+		</h2> -->
+	</div>
+</div>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html style="height:100%">
+	<head>
+		<meta charset="utf-8">
+		<title>FRC Scout</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta name='mobile-web-app-capable' content='yes'>
+		<link rel="manifest" href="manifest.json">
+		
+		<base href="/">
+		
+		<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=wAvOLR9ye8">
+		<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png?v=wAvOLR9ye8" sizes="32x32">
+		<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png?v=wAvOLR9ye8" sizes="16x16">
+		<link rel="manifest" href="/favicons/manifest.json?v=wAvOLR9ye8">
+		<link rel="mask-icon" href="/favicons/safari-pinned-tab.svg?v=wAvOLR9ye8" color="#5bbad5">
+		<link rel="shortcut icon" href="/favicons/favicon.ico?v=wAvOLR9ye8">
+		<meta name="msapplication-config" content="/favicons/browserconfig.xml?v=wAvOLR9ye8">
+		<meta name="theme-color" content="#ffffff">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.0.0/bootstrap-social.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/0.10.2/angular-chart.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.13/textAngular.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-toastr/2.1.1/angular-toastr.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/2.6.0/angularjs-color-picker.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/2.6.0/themes/angularjs-color-picker-bootstrap.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.5/nv.d3.min.css">
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.1/bootstrap-material-design.css"> -->
+		<style>
+			
+		</style>
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/animate.css">
+		<link rel="stylesheet" href="css/angular-bootstrap-simple-chat.css">
+		<link rel="stylesheet" href="css/angular-bootstrap-simple-chat-themes.css">
+		<link rel="stylesheet" href="css/material-design-icons.css">
+		<link rel="stylesheet" href="css/chat-window.css">
+		<link rel="stylesheet" href="css/angular-confirm.min.css">
+		<link rel="stylesheet" href="css/angular-smilies-embed.min.css">
+		<!-- <link rel="stylesheet" href="css/bootstrap-material-design-ripples.css"> -->
+		
+		
+
+		
+	</head>
+    <body ng-app="frcScout" id="ng-app" style="height:100%" class="team_background">
+		<div ui-view style="height:100%" class=""></div>
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-82672508-1', 'auto');
+		//  ga('send', 'pageview');
+
+		</script>
+    </body>
+	
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-touch.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/1.0.3/angular-chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-sanitize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload-shim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-drag-and-drop-lists/1.4.0/angular-drag-and-drop-lists.min.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.3/angular-messages.min.js"></script> -->
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.13/textAngular-rangy.min.js"></script>		
+<script src="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.13/textAngular-sanitize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.13/textAngular.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-toastr/2.1.1/angular-toastr.tpls.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-scroll-glue/2.1.0/scrollglue.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.0.0/angular-moment.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/2.6.0/angularjs-color-picker.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angulartics/1.3.0/angulartics.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angulartics-google-analytics/0.3.0/angulartics-ga.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router-default/0.0.6/angular-ui-router-default.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-elastic/2.5.1/elastic.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.5/nv.d3.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-nvd3/1.0.8/angular-nvd3.min.js" type="text/javascript"></script>
+
+<!--[if lte IE 9]>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Base64/0.3.0/base64.min.js"></script>
+<![endif]-->
+<script src="//cdn.jsdelivr.net/satellizer/0.15.5/satellizer.min.js"></script>
+<script src="js/libraries/toggle-switch.js"></script>
+<script src="js/libraries/angular-confirm.min.js"></script>
+<script src="js/libraries/angular-smilies.min.js"></script>
+<!-- <script src="js/libraries/angular-growl-notifications.js"></script> -->
+<!-- <script src="js/libraries/desktop-notify-min.js"></script> -->
+<!-- <script src="js/libraries/angular-web-notification.js"></script> -->
+<!-- <script src="js/libraries/dirPagination.js"></script> -->
+<script src="js/libraries/zInfiniteScroll.js"></script>
+<!-- <script src="js/libraries/angular-ui-router-default.js"></script> -->
+
+<script src="js/app.js"></script>
+<script src="js/services.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/directives.js"></script>
+<script src="js/controllers/main.js"></script>
+<script src="js/controllers/main.test.js"></script>
+<script src="js/controllers/main.home.js"></script>
+<script src="js/controllers/main.help.js"></script>
+<script src="js/controllers/main.about.js"></script>
+<script src="js/controllers/main.profile.js"></script>
+<script src="js/controllers/main.teamAdmin.js"></script>
+<script src="js/controllers/main.matchDataEntry.js"></script>
+<script src="js/controllers/main.matchDataView.js"></script>
+<script src="js/controllers/main.robotDataEntry.js"></script>
+<script src="js/controllers/main.reportsGraphs.js"></script>
+<script src="js/controllers/main.reportsTable.js"></script>
+<script src="js/controllers/main.teams.js"></script>
+<script src="js/controllers/main.season2016.js"></script>
+<script src="js/controllers/main.season2017.js"></script>
+
+<!-- <script src="js/libraries/ocLazyLoad.min.js"></script> -->
+<!-- <script src="js/libraries/angular-bootstrap-material.js"></script> -->

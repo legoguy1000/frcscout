@@ -1,0 +1,221 @@
+<style>
+	.team_header {
+		background-color: {{globalInfo.teamInfo.background_header}};
+		color: {{globalInfo.teamInfo.font_color_header}};
+		border-color: {{globalInfo.teamInfo.font_color_header}};
+	}
+	.team_header .dropdown-menu>li>a:focus, 
+	.team_header .dropdown-menu>li>a:hover,
+	.team_header.navbar-default .navbar-nav>.open>a, 
+	.team_header.navbar-default .navbar-nav>.open>a:focus, 
+	.team_header.navbar-default .navbar-nav>.open>a:hover,
+	.team_header .dropdown-menu>.active>a, 
+	.team_header .dropdown-menu>.active>a:focus, 
+	.team_header .dropdown-menu>.active>a:hover,
+	.team_header.navbar-default .navbar-nav>.active>a, 
+	.team_header.navbar-default .navbar-nav>.active>a:focus, 
+	.team_header.navbar-default .navbar-nav>.active>a:hover	{
+		background-color: {{globalInfo.teamInfo.font_color_header}};
+		color: {{globalInfo.teamInfo.background_header}};
+	}
+	.team_header .dropdown-menu {
+		background-color: {{globalInfo.teamInfo.background_header}};
+	}
+	.team_header .dropdown-menu .divider {
+		background-color: {{globalInfo.teamInfo.font_color_header}};
+	}
+	.team_header .dropdown-menu>li>a {
+		color: {{globalInfo.teamInfo.font_color_header}};
+	}
+	.team_header.navbar-default .navbar-nav>li>a,
+	.team_header.navbar-default .navbar-brand	{
+		color: {{globalInfo.teamInfo.font_color_header}};
+	}
+	.team_background,
+	.team_background .list-group-item,
+	.team_background .panel	{
+		background-color: {{globalInfo.teamInfo.background_body}};
+		color: {{globalInfo.teamInfo.font_color_body}};
+	}
+</style>
+<nav class="navbar navbar-default navbar-static-top" role="navigation" abm-component ng-class="{'team_header': isAuthed && globalInfo.teamInfo != null}">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle"  aria-expanded="false" aria-controls="navbar" ng-click="isCollapsed=!isCollapsed">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" ui-sref="main.home">
+				<img src="/favicons/android-chrome-192x192.png" style="width:50px;display:inline-block;margin-top: -15px;"/>
+				<span style="vertical-align:top;">FRC Scout</span>
+			</a>
+		</div>
+		<div class="navbar-collapse collapse" uib-collapse="isCollapsed">
+			<ul class="nav navbar-nav">
+				<li ui-sref-active="active">
+					<a ui-sref="main.season{{headerSeasonsMenu.current.year}}">{{headerSeasonsMenu.current.year}} | {{headerSeasonsMenu.current.name | uppercase}}</a>
+				</li>
+				<li ui-sref-active="active" uib-dropdown class="dropdown" ng-class="{'disabled':headerSeasonsMenu.previous.length==0}">
+					<a uib-dropdown-toggle>
+						Previous Years
+					</a>
+					<ul class="dropdown-menu" uib-dropdown-menu ng-if="headerSeasonsMenu.previous.length!=0">
+						<li ui-sref-active="active" ng-repeat="season in headerSeasonsMenu.previous">
+							<a ui-sref="main.season{{season.year}}">{{season.year}} | {{season.name | uppercase}}</a>
+						</li>
+					</ul>
+				</li>				
+			</ul>
+			<ul class="nav navbar-nav navbar-right" style="margin-right: 0px;">
+				<li ui-sref-active="active">
+					<a ui-sref="main.help">Help</a>
+				</li>
+				<li ui-sref-active="active">
+					<a ui-sref="main.about">About</a>
+				</li>
+				<li ui-sref-active="active" ng-show="isAuthed">
+					<a ui-sref="main.test">Test</a>
+				</li>
+				<li class="visible-md visible-sm" ng-show="isAuthed">
+					<a><i class="fa fa-search"></i></a>
+				</li>
+				<li ui-sref-active="active" ng-hide="isAuthed">
+					<a ng-click="openLoginModal()" style="cursor: pointer;"><i class="fa fa-sign-in fa-fw"></i></a>
+				</li>
+				<li ui-sref-active="active" ng-show="isAuthed && globalInfo.teamInfo != null && globalInfo.teamInfo.status=='joined'">
+					<a ng-click="chatVariables.hide = !chatVariables.hide" style="cursor: pointer;" title="Toggle Chat Box"><i class="fa fa-comments"></i></a>
+					<!-- <span class="chat-message-counter" ng-show="chatVariables.minimize == true && chatVariables.newChatCount > 0">{{chatVariables.newChatCount}}</span> -->
+				</li>
+				<li ui-sref-active="active" uib-dropdown class="dropdown" ng-show="isAuthed">
+					<a uib-dropdown-toggle style="cursor: pointer;"><i class="fa fa-user"></i> </a>
+					<ul class="dropdown-menu" uib-dropdown-menu>
+						<li>
+							<a>{{globalInfo.userInfo.full_name}}</a>
+						</li>
+						<li class="divider"></li>
+						<li ui-sref-active="active">
+							<a ui-sref="main.profile">My Profile</a>
+						</li>
+						<li class="divider" ng-show="globalInfo.teamInfo!=null && globalInfo.teamInfo.privs=='admin'"></li>
+						<li ui-sref-active="active" ng-show="globalInfo.teamInfo!=null && globalInfo.teamInfo.privs=='admin'">
+							<a ui-sref="main.teamAdmin">Team Admin Menu</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a ng-click="logout()" style="cursor: pointer;"><i class="fa fa-sign-out pull-right"></i>Logout </a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="nav navbar-nav navbar-right col-lg-3 hidden-md hidden-sm" ng-show="isAuthed && globalInfo.teamInfo != null && globalInfo.teamInfo.status=='joined'">
+				<div class="input-group" style="padding-top: 8px; padding-bottom: 8px;margin-left: 15px;">
+					<ui-select
+					ng-model="globalInfo.searchAllTeams"
+					theme="bootstrap"
+					ng-disabled=""
+					reset-search-input="true" 
+					append-to-body="true" 
+					style="width: 100%">
+						<ui-select-match allow-clear="true" placeholder="Search for Team">{{$select.selected.nickname}} ({{$select.selected.team_number}})</ui-select-match>
+						<ui-select-choices refresh="searchTeams($select)" refresh-delay="300" repeat="team in searchTeamRes">
+							<div class="clearfix">
+								<span>{{team.nickname}}</span>
+								<span class="pull-right">{{team.team_number}}</span>
+							</div>
+						</ui-select-choices>
+					</ui-select>
+					<span class="input-group-btn">
+						<button class="btn btn-info" type="button" ng-click="goToTeamPage()"><i class="fa fa-search"></i></button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+<div class="container">
+	<div ui-view class="row"></div>
+</div>
+<div id="live-chat" ng-show="isAuthed && globalInfo.teamInfo != null && globalInfo.teamInfo.status=='joined' && !chatVariables.hide">	
+	<header class="clearfix">
+		<div class="pull-right" style="z-index:1000;">
+			<span ng-click="chatVariables.hide = true"><i class="fa fa-close"></i></span>
+		</div>	
+		<div>
+			<h4 ng-click="minimizeChatBox()" ng-class="{'connecting':chatWS && chatWS.readyState == 0, 'open':chatWS && chatWS.readyState == 1, 'closed':chatWS && chatWS.readyState == 3}">{{globalInfo.teamInfo.nickname}}</h4>
+		</div>
+		
+		<span class="chat-message-counter" ng-show="chatVariables.minimize == true && chatVariables.newChatCount > 0">{{chatVariables.newChatCount}}</span>
+	</header>
+	<div class="chat" ng-hide="chatVariables.minimize">			
+		<div class="chat-history" scroll-glue="chatVariables.glued" z-infinite-scroll="loadMoreChat" inverse="true" scroll-threshold="10" time-threshold="1500">				
+			<div class="chat-loading" ng-show="chatVariables.loadingMore">
+				<i class="fa fa-spinner fa-spin"></i>
+			</div>
+			<div class="chat-message clearfix" ng-repeat="message in chatVariables.messages track by $index" ng-class="{'chat-group-message':message.user_id == chatVariables.messages[$index-1].user_id && message.timestamp_epoch - chatVariables.messages[$index-1].timestamp_epoch < 300}">					
+				<!-- <img ng-src="https://api.adorable.io/avatars/50/{{message.user_info.email}}" alt="" width="32" height="32"> -->
+				<div class="chat-timestamp" ng-show="message.type=='user_change'">
+					<!-- <time class="chart-timestamp-span" ng-show="message.today">{{message.timestamp_epoch * 1000 | date:'shortTime'}}</time>
+					<time class="chart-timestamp-span" ng-hide="message.today">{{message.timestamp_epoch * 1000 | date:'MMM d h:mma'}}</time> -->
+					<!-- <time class="chart-timestamp-span" am-time-ago="message.timestamp_epoch * 1000"></time> -->
+					<span class="chart-timestamp-span">{{message.message}}</span>
+				</div>
+				<div ng-show="message.type=='message'">
+					<div class="chat-timestamp" ng-show="message.timestamp_epoch - chatVariables.messages[$index-1].timestamp_epoch >= 300">
+						<!-- <time class="chart-timestamp-span" ng-show="message.today">{{message.timestamp_epoch * 1000 | date:'shortTime'}}</time>
+						<time class="chart-timestamp-span" ng-hide="message.today">{{message.timestamp_epoch * 1000 | date:'MMM d h:mma'}}</time> -->
+						<!-- <time class="chart-timestamp-span" am-time-ago="message.timestamp_epoch * 1000"></time> -->
+						<time class="chart-timestamp-span">{{message.timestamp_epoch * 1000 | amCalendar }}</time>
+					</div>
+					<div style="padding-left:6px;" ng-hide="message.sent || (message.user_id == chatVariables.messages[$index-1].user_id && message.timestamp_epoch - chatVariables.messages[$index-1].timestamp_epoch < 300 && chatVariables.messages[$index-1].type!='user_change')">
+						<h5>{{message.user_info.full_name}}</h5>
+					</div>
+					<div class="chat-message-content clearfix" ng-class="{'chat-sent':message.sent, 'chat-received':!message.sent, 'chat-group-message-sent':message.sent, 'chat-group-message-received':!message.sent}" uib-tooltip="{{message.user_info.full_name}}  {{message.timestamp_epoch * 1000 | date:'MMM d h:mm a'}}" tooltip-append-to-body="true" tooltip-placement="left">						
+						<!-- <div>{{message.message}}</div> -->
+						<div ng-bind-html="message.message | smilies"></div>
+					</div> <!-- end chat-message-content -->
+				</div>
+			</div> <!-- end chat-message -->
+			<!-- <hr ng-repeat-end ng-hide="$last"> -->
+		</div> <!-- end chat-history -->
+		<form style="display:inherit" ng-submit="chatVariables.sendMessage()" class="">
+			<div class="">
+				<textarea 
+					style="font-size: 12px;" 
+					class="form-control" 
+					placeholder="You can write here" 
+					msd-elastic 
+					focus-on-change="chatVariables.writingMessage" 
+					ng-model="chatVariables.writingMessage" 
+					required
+					ng-enter="chatVariables.sendMessage()"
+					ng-disabled="chatWS.readyState != 1">
+				</textarea>
+				<!-- <span class="input-group-btn">
+					<button type="submit" class="btn" ng-disabled="chatVariables.sending"><i class="fa" ng-class="{'fa-paper-plane':!chatVariables.sending, 'fa-spinner fa-spin':chatVariables.sending}"></i></button>
+				</span> -->
+			</div>
+			<div class="input-group" style="width:100%">
+				<span
+					class="input-group-addon" style="width:50%"
+					smilies-selector="chatVariables.writingMessage"
+					smilies-placement="top-right"
+					smilies-title="Smilies">
+				</span>
+				<span style="width:50%" class="input-group-btn">
+					<button type="submit" style="width:100%" class="btn" ng-disabled="chatVariables.sending">
+						<i class="fa" ng-class="{'fa-paper-plane':!chatVariables.sending, 'fa-spinner fa-spin':chatVariables.sending}"></i>
+					</button>
+				</span>
+			</div>
+		</form>
+		<!-- <form action="#" method="post">
+			<fieldset>
+			
+				<input type="text" placeholder="Type your message…" autofocus>
+				<input type="hidden">
+			</fieldset>
+		</form> -->
+	</div> <!-- end chat -->
+</div> <!-- end live-chat -->

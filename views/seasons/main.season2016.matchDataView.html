@@ -1,0 +1,206 @@
+<div ng-controller="main.season2016.matchDataView-ctrl">
+	<div class="" ng-include="'views/includes/eventMatchSelect.html'"></div>
+	<div class="row">
+		<table class="table table-hover table-condensed text-center">
+			<thead>
+				<tr>
+					<th class="info text-center">{{matchStats.matchInfo.blue_1}}</th>
+					<th class="info text-center">{{matchStats.matchInfo.blue_2}}</th>
+					<th class="info text-center">{{matchStats.matchInfo.blue_3}}</th>
+					<th class="info text-center">Official Totals</th>
+					<th class="text-center">Teams</th>
+					<th class="danger text-center">Official Totals</th>
+					<th class="danger text-center">{{matchStats.matchInfo.red_1}}</th>
+					<th class="danger text-center">{{matchStats.matchInfo.red_2}}</th>
+					<th class="danger text-center">{{matchStats.matchInfo.red_3}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+						<td></td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.auto_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.blue_1.auto_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.auto_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.blue_2.auto_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.auto_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.blue_3.auto_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.autoBouldersHigh}} <i class="fa fa-caret-up"></i> {{matchStats.official_data.score_breakdown.blue.autoBouldersLow}}<i class="fa fa-caret-down"></i></td>
+					<td class="text-center">Boulder Counts</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.autoBouldersHigh}} <i class="fa fa-caret-up"></i> {{matchStats.official_data.score_breakdown.red.autoBouldersLow}}<i class="fa fa-caret-down"></i></td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.auto_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.red_1.auto_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.auto_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.red_2.auto_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.auto_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.red_3.auto_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.auto_goal_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.auto_goal_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.auto_goal_points}}</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.autoBoulderPoints}}</td>
+					<td class="text-center">Boulder Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.autoBoulderPoints}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.auto_goal_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.auto_goal_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.auto_goal_points}}</td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.auto_reach_defense_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.auto_reach_defense_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.auto_reach_defense_points}}</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.autoReachPoints}}</td>
+					<td class="text-center">Reach Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.autoReachPoints}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.auto_reach_defense_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.auto_reach_defense_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.auto_reach_defense_points}}</td>
+				</tr>
+				<tr>
+					<td class="info text-center">#</td>
+					<td class="info text-center">#</td>
+					<td class="info text-center">#</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.autoCrossingPoints}}</td>
+					<td class="text-center">Crossing Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.autoCrossingPoints}}</td>
+					<td class="danger text-center">#</td>
+					<td class="danger text-center">#</td>
+					<td class="danger text-center">#</td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.auto_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.auto_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.auto_points}}</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.autoPoints}}</td>
+					<td class="text-center active strong">AUTONOMOUS</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.autoPoints}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.auto_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.auto_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.auto_points}}</td>
+				</tr>
+				<tr>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.tele_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.blue_1.tele_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.tele_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.blue_2.tele_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.tele_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.blue_3.tele_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.teleopBouldersHigh}} <i class="fa fa-caret-up"></i> {{matchStats.official_data.score_breakdown.blue.teleopBouldersLow}}<i class="fa fa-caret-down"></i></td>
+					<td class="text-center">Boulder Counts</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.teleopBouldersHigh}} <i class="fa fa-caret-up"></i> {{matchStats.official_data.score_breakdown.red.teleopBouldersLow}}<i class="fa fa-caret-down"></i></td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.tele_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.red_1.tele_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.tele_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.red_2.tele_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.tele_high_goal_count}} <i class="fa fa-caret-up"></i> {{matchStats.matchData.red_3.tele_low_goal_count}} <i class="fa fa-caret-down"></i></td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.tele_goal_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.tele_goal_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.tele_goal_points}}</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.teleopBoulderPoints}}</td>
+					<td class="text-center">Boulder Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.teleopBoulderPoints}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.tele_goal_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.tele_goal_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.tele_goal_points}}</td>
+				</tr>
+				<tr>
+					<td class="info text-center">#</td>
+					<td class="info text-center">#</td>
+					<td class="info text-center">#</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.teleopCrossingPoints}}</td>
+					<td class="text-center">Cross Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.teleopCrossingPoints}}</td>
+					<td class="danger text-center">#</td>
+					<td class="danger text-center">#</td>
+					<td class="danger text-center">#</td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.challenge_tower_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.challenge_tower_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.challenge_tower_points}}</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.teleopChallengePoints}}</td>
+					<td class="text-center">Tower Challenge Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.teleopChallengePoints}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.challenge_tower_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.challenge_tower_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.challenge_tower_points}}</td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.scale_tower_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.scale_tower_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.scale_tower_points}}</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.teleopScalePoints}}</td>
+					<td class="text-center">Tower Scale Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.teleopScalePoints}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.scale_tower_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.scale_tower_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.scale_tower_points}}</td>
+				</tr>
+				
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.tele_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.tele_points}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.tele_points}}</td>
+					<td class="info text-center" strong>{{matchStats.official_data.score_breakdown.blue.teleopPoints}}</td>
+					<td class="text-center active strong">TELEOP</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.teleopPoints}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.tele_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.tele_points}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.tele_points}}</td>
+				</tr>
+				<tr>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="info text-center" colspan="4"></td>
+					<td class="text-center">Defenses Breached</td>
+					<td class="danger text-center" colspan="4"></td>
+				</tr>
+				<tr>
+					<td class="info text-center" colspan="3"></td>
+					<td class="info text-center strong">
+						<span ng-show="(matchStats.official_data.score_breakdown.blue.teleopBouldersHigh + matchStats.official_data.score_breakdown.blue.teleopBouldersLow)>=10"><i class="fa fa-check"></i></span>
+					</td>
+					<td class="text-center">Tower Captured</td>
+					<td class="danger text-center strong">
+						<span ng-show="(matchStats.official_data.score_breakdown.red.teleopBouldersHigh + matchStats.official_data.score_breakdown.red.teleopBouldersLow)>=10"><i class="fa fa-check"></i></span>
+					</td>
+					<td class="danger text-center" colspan="3"></td>
+				</tr>
+				<tr>
+					<td class="info text-center">{{matchStats.matchData.blue_1.foul_count}} • {{matchStats.matchData.blue_1.tech_foul_count}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_2.foul_count}} • {{matchStats.matchData.blue_2.tech_foul_count}}</td>
+					<td class="info text-center">{{matchStats.matchData.blue_3.foul_count}} • {{matchStats.matchData.blue_3.tech_foul_count}}</td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.foulCount}} • {{matchStats.official_data.score_breakdown.blue.techFoulCount}}</td>
+					<td class="text-center">Fouls/Techs Committed</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.foulCount}} • {{matchStats.official_data.score_breakdown.blue.techFoulCount}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_1.foul_count}} • {{matchStats.matchData.red_1.tech_foul_count}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_2.foul_count}} • {{matchStats.matchData.red_2.tech_foul_count}}</td>
+					<td class="danger text-center">{{matchStats.matchData.red_3.foul_count}} • {{matchStats.matchData.red_3.tech_foul_count}}</td>
+				</tr>
+				<tr>
+					<td class="info text-center" colspan="3"></td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.foulPoints}}</td>
+					<td class="text-center">Foul Points</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.foulPoints}}</td>
+					<td class="danger text-center" colspan="3"></td>
+				</tr>
+				<tr>
+					<td class="info text-center" colspan="3"></td>
+					<td class="info text-center strong">{{matchStats.official_data.score_breakdown.blue.adjustPoints}}</td>
+					<td class="text-center">Adjustments</td>
+					<td class="danger text-center strong">{{matchStats.official_data.score_breakdown.red.adjustPoints}}</td>	
+					<td class="danger text-center" colspan="3"></td>	
+				</tr>
+				<tr>
+					<td class="info text-center" colspan="3"></td>
+					<td class="info text-center strong">{{matchStats.official_data.alliances.blue.score}}</td>
+					<td class="text-center success strong">FINAL SCORE</td>
+					<td class="danger text-center strong">{{matchStats.official_data.alliances.red.score}}</td>
+					<td class="danger text-center" colspan="3"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<!-- <div>
+	<pre>
+		{{matchInfo | json}}
+	</pre>
+</div> -->

@@ -1,0 +1,27 @@
+<h2 class="col-xs-12">
+	<span>{{seasonData.name | uppercase}}</span>
+	<span class="pull-right">{{seasonData.year}}</span>
+</h2>
+<div class="col-xs-12 form-group">
+	<ul class="nav nav-tabs md-tabs nav-justified">
+		<li class="uib-tab nav-item" ui-sref-active="active">
+			<a ui-sref="main.season{{seasonData.year}}.info">Game Info</a>
+		</li>
+		<li class="uib-tab nav-item" ui-sref-active="active">
+			<a ui-sref="main.season{{seasonData.year}}.matchDataEntry">Match Data Entry</a>
+		</li>
+		<li class="uib-tab nav-item" ui-sref-active="active">
+			<a ui-sref="main.season{{seasonData.year}}.robotDataEntry">Robot Data Entry</a>
+		</li>
+		<li class="uib-tab nav-item" ui-sref-active="active">
+			<a ui-sref="main.season{{seasonData.year}}.matchDataView">Match Data View</a>
+		</li>
+		<li class="uib-tab nav-item" ui-sref-active="active">
+			<a ui-sref="main.season{{seasonData.year}}.reportsGraphs">Reports - Graphs</a>
+		</li>
+		<li class="uib-tab nav-item" ui-sref-active="active">
+			<a ui-sref="main.season{{seasonData.year}}.reportsTable">Reports - Table</a>
+		</li>
+	</ul>
+</div>
+<div class="col-xs-12" ui-view></div>

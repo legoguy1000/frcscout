@@ -1,0 +1,38 @@
+<div class="col-sm-9">
+	The FRC Scouting Application provides realtime scouting and information reporting for the FIRST Robotics Competetiton.  This application will have realtime information provided by the FRC field management system and allow teams to scout additional data.A variety of reports are available for teams to make data drive decisions regarding alliance selection and strategies.
+</div>
+<div class="col-sm-3">
+
+</div>
+<div class="col-xs-12">
+	<h2>Current Events</h2>
+	<div class="col-xs-12 text-center" ng-show="loading.currentEvents">
+		<i class="fa fa-spinner fa-spin" aria-hidden="true" style="font-size: 100px;margin-top: 40px;"></i>
+	</div>
+	<table class="table table-striped" ng-hide="loading.currentEvents">
+		<thead>
+			<tr>
+				<th>Event</th>
+				<th>Dates</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="data in eventData.events">
+				<td>
+					<a ui-sref="main.season{{data.year}}.matchDataEntry({'event':data.event_key})">
+						{{data.name}}
+					</a>
+					<i class="fa fa-star" aria-hidden="true" ng-show="data.team_active" uib-tooltip="Your team is currently competing at this event"></i>
+					<br>
+					<small>{{data.location}}</small>
+				</td>
+				<td>
+					{{data.start_date_unix * 1000 | date:'fullDate'}} to {{data.end_date_unix * 1000 | date:'fullDate'}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="col-xs-12 text-center">
+	<h4><strong>{{stats.users}} Active Users</strong> | <strong>{{stats.teams}} Teams</strong> | <strong>{{stats.events}} Events</strong> | <strong>{{stats.matches}} Matches</strong></h4>
+</div>

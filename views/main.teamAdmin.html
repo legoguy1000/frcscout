@@ -1,0 +1,131 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<i class="fa fa-info-circle"></i>
+		Team Information
+	</div>
+	<form ng-submit="updateTeamInfo()">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-xs-12 row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<span class="strong">Team Number: </span>
+							<span class="">{{teamInfo.team_number}}</span>
+						</div>
+						<div class="form-group">
+							<span class="strong">Team Name: </span>
+							<span class="">{{teamInfo.nickname}}</span>
+						</div>
+						<div class="form-group">
+							<span class="strong">Country: </span>
+							<span class="">{{teamInfo.country_name}}</span>
+						</div>
+					</div>
+					<div class="col-xs-6 clearfix">
+						<img class="img-responsive pull-right" ng-src="{{teamInfo.logo}}"/>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="teamInfo.logo">URL to Team Logo</label>
+						<input id="teamInfo.logo" type="text" class="form-control" ng-model="teamInfo.logo">
+					</div>
+				</div>
+				<div class="col-xs-12 row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="teamInfo.font_color_header">Header Font Color</label>
+							<color-picker
+								ng-model="teamInfo.font_color_header"
+								options="options"
+							></color-picker>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="teamInfo.background_header">Header Background Color</label>
+							<color-picker
+								ng-model="teamInfo.background_header"
+								options="options"
+							></color-picker>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="teamInfo.font_color_body">Body Font Color</label>
+							<color-picker
+								ng-model="teamInfo.font_color_body"
+								options="options"
+							></color-picker>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="teamInfo.background_body">Body Background Color</label>
+							<color-picker
+								ng-model="teamInfo.background_body"
+								options="options"
+							></color-picker>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 row">
+					<div class="form-group col-sm-6">
+						<label>Current Event: </label>
+						<ui-select
+						ng-model="teamInfo.current_event"
+						theme="bootstrap"
+						reset-search-input="true"
+						style="width: 100%"
+						ng-disabled="">
+							<ui-select-match placeholder="Search for Event">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices repeat="event.event_key as event in eventList.all | filter: $select.search"" group-by="createEventGroups">
+								<div>{{event.name}}</div>
+								<small>{{event.location}}</small>
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel-footer clearfix">
+			<button class="btn btn-primary pull-right" ng-disabled="saving.teamInfo">
+				<span ng-show="saving.teamInfo">Saving...  <i class="fa fa-spinner fa-pulse fa-fw"></i></span>
+				<span ng-hide="saving.teamInfo">Save</span>		
+			</button>
+		</div>
+	</form>
+</div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<i class="fa fa-users"></i>
+		Members
+	</div>
+	<div class="panel-body">
+		<table ng-table="membersTable" class="table table-hover table-condensed" show-filter="true">
+			<tr ng-repeat="user in $data">
+				<td title="'Name'" filter="{ full_name: 'text'}" sortable="'full_name'">
+					{{user.full_name}}
+				</td>
+				<td title="'Email'" filter="{ email: 'text'}" sortable="'email'">
+					{{user.email}}
+				</td>
+				<td title="'Privs'" filter="{ privs: 'text'}" sortable="'privs'">
+					<select ng-model="memberPrivs[user.id]" class="form-control" ng-if="user.status=='joined'" ng-change="updateMemberPrivs(user)" ng-disabled="user.id==globalInfo.userInfo.id && user.privs=='admin'">
+						<option disabled></option>
+						<option value="read" ng-selected="user.privs=='read'">Read</option>
+						<option value="write" ng-selected="user.privs=='write'">Write</option>
+						<option value="admin" ng-selected="user.privs=='admin'">Admin</option>
+					</select>
+					<span ng-if="user.status!='joined'">N/A</span>
+				</td>
+				<td title="'Status'" filter="{ status: 'text'}" sortable="'status'">
+					{{user.status | capitalizeFirst}}
+					<span ng-if="user.status=='pending'" class="pull-right">
+						<button class="btn btn-success btn-xs" ng-click="approveTeamMember(user)" uib-tooltip="Approve Membership"><span class="fa fa-check"></span></button>
+						<button class="btn btn-danger btn-xs" ng-click="rejectTeamMember(user)" uib-tooltip="Deny Membership"><span class="fa fa-times"></span></button>
+					</span>
+				</td>
+				<td>
+					<button class="btn btn-danger btn-sm" ng-show="user.status=='joined'" ng-click="removeTeamMembership(user)" ng-disabled="user.id==globalInfo.userInfo.id && user.privs=='admin'"><span class="fa fa-times"></span></button>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

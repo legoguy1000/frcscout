@@ -1,0 +1,80 @@
+<div ng-controller="main.season2016.robotDataEntry-ctrl">
+	<div class="" ng-include="'views/includes/robotEntryTop.html'"></div>
+	<div class="row"  ng-hide="robotDataEntry.selectTeam==null || robotDataEntry.selectTeam==undefined">
+		<div class="col-lg-4">
+			<h4>Shooting:</h4>
+			<label>High Goal: </label>
+			<select class="form-control" ng-model="robotData.high_goal" ng-options="value for value in capabilityTimesOptions">
+			</select>
+			<label>Low Goal: </label>
+			<select class="form-control" ng-model="robotData.low_goal" ng-options="value for value in capabilityTimesOptions">
+			</select>
+		</div>
+		<div class="col-lg-4">
+			<h4>Drive Train: </h4>
+			<label>Primary Options: </label>
+			<select class="form-control" ng-model="robotData.drive_train" ng-options="value for value in driveTrainOptions">
+			</select>
+			<div style="width:100%;">
+				<div uib-collapse="robotData.drive_train!='Other'">
+					<label>Other: </label>
+					<input class="form-control" ng-model="robotData.drive_train_other" ng-disabled="robotData.drive_train!='Other'"/>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<h4>&nbsp;</h4>
+			<label>Climb Tower: </label>
+			<select class="form-control" ng-model="robotData.climb_tower" ng-options="value for value in yesNoOptions">
+			</select>
+			<label>Block: </label>
+			<select class="form-control" ng-model="robotData.block" ng-options="value for value in yesNoOptions">
+			</select>
+		</div>
+		<h4 class="col-xs-12">Defense Capabilities:</h4>
+		<div class="col-lg-4">
+			<label>Portcullis: </label>
+			<select class="form-control" ng-model="robotData.portcullis" ng-options="value for value in capabilityTimesOptions">
+			</select>
+			<label>Cheval De Frise: </label>
+			<select class="form-control" ng-model="robotData.cheval_de_frise" ng-options="value for value in capabilityTimesOptions">
+			</select>
+			<label>Moat: </label>
+			<select class="form-control" ng-model="robotData.moat" ng-options="value for value in capabilityTimesOptions">
+			</select>
+		</div>
+		<div class="col-lg-4">
+			<label>Ramparts: </label>
+			<select class="form-control" ng-model="robotData.ramparts" ng-options="value for value in capabilityTimesOptions">
+			</select>
+			<label>Drawbridge: </label>
+			<select class="form-control" ng-model="robotData.drawbridge" ng-options="value for value in capabilityTimesOptions">
+			</select>
+			<label>Sally Port: </label>
+			<select class="form-control" ng-model="robotData.sally_port" ng-options="value for value in capabilityTimesOptions">
+			</select>
+		</div>	
+		<div class="col-lg-4">
+			<label>Rock Wall: </label>
+			<select class="form-control" ng-model="robotData.rock_wall" ng-options="value for value in capabilityTimesOptions">
+			</select>
+			<label>Rough Terrain: </label>
+			<select class="form-control" ng-model="robotData.rough_terrain" ng-options="value for value in capabilityTimesOptions">
+			</select>
+			<label>Low Bar: </label>
+			<select class="form-control" ng-model="robotData.low_bar" ng-options="value for value in capabilityTimesOptions">
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		
+	</div>
+	<div class="row">
+		
+	</div>
+</div>
+<!-- <div>
+	<pre>
+		{{robotData | json}}
+	</pre>
+</div> -->

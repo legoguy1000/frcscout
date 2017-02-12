@@ -1,0 +1,84 @@
+<div class="" ng-include="'views/includes/eventTeamsSelect.html'"></div>
+<div class="row">
+	<div class="row col-lg-12">
+		<div class="text-center" ng-class="{'col-lg-12':fullscreen.allianceScores, 'col-lg-6':!fullscreen.allianceScores}">
+			<div class="">
+				<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('allianceScores')">
+					<i class="fa fa-arrows-alt"></i>
+				</span>
+				<h2>Alliance Scores</h2>
+			</div>
+			<canvas class="chart chart-line" chart-data="reportData.allianceScores.scores"
+			  chart-labels="reportData.allianceScores.xLabels" chart-options="chartOptions.singleAxis" chart-series="reportData.allianceScores.legend">
+			</canvas> 
+			<!-- <nvd3 options="options.allianceScores" data="reportData.allianceScores.newData" class="with-3d-shadow with-transitions"></nvd3> -->
+		</div>
+		<div class="text-center" ng-class="{'col-lg-12':fullscreen.individualScores, 'col-lg-6':!fullscreen.individualScores}">
+			<div class="">
+				<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('individualScores')">
+					<i class="fa fa-arrows-alt"></i>
+				</span>
+				<h2>Individual Scores</h2>
+			</div>
+			<canvas class="chart chart-line" chart-data="reportData.yearSpecific.individualScores.scores"
+			  chart-labels="reportData.yearSpecific.individualScores.xLabels" chart-options="chartOptions.singleAxis" chart-series="reportData.yearSpecific.individualScores.legend">
+			</canvas> 
+		</div>
+	</div>
+	<div class="row col-lg-12">
+		<div class="text-center" ng-class="{'col-lg-12':fullscreen.autoPoints, 'col-lg-6':!fullscreen.autoPoints}">
+			<div class="">
+				<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('autoPoints')">
+					<i class="fa fa-arrows-alt"></i>
+				</span>
+				<h2>Autonomous Points</h2>
+			</div>
+			<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.autoPoints.scores"
+			  chart-labels="reportData.yearSpecific.autoPoints.xLabels" 
+			  chart-options="chartOptions.singleAxis" 
+			  chart-series="reportData.yearSpecific.autoPoints.legend">
+			</canvas> 
+		</div>
+		<div class="text-center" ng-class="{'col-lg-12':fullscreen.telePoints, 'col-lg-6':!fullscreen.telePoints}">
+			<div class="">
+				<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('telePoints')">
+					<i class="fa fa-arrows-alt"></i>
+				</span>
+				<h2>Teleoperated Points</h2>
+			</div>
+			<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.telePoints.scores"
+			  chart-labels="reportData.yearSpecific.telePoints.xLabels" 
+			  chart-options="chartOptions.singleAxis" 
+			  chart-series="reportData.yearSpecific.telePoints.legend">
+			</canvas> 
+		</div>
+	</div>
+	<div class="row col-lg-12">
+		<div class="text-center" ng-class="{'col-lg-12':fullscreen.averageScores, 'col-lg-6':!fullscreen.averageScores}">
+			<div class="">
+				<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('averageScores')">
+					<i class="fa fa-arrows-alt"></i>
+				</span>
+				<h2>Total & Average Scored Points</h2>
+			</div>
+			<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.averageScores.scores"
+			  chart-labels="reportData.yearSpecific.averageScores.xLabels" 
+			  chart-options="chartOptions.singleAxis" 
+			  chart-series="reportData.yearSpecific.averageScores.legend">
+			</canvas> 
+		</div>
+		<div class="text-center" ng-class="{'col-lg-12':fullscreen.fouls, 'col-lg-6':!fullscreen.fouls}">
+			<div class="">
+				<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('fouls')">
+					<i class="fa fa-arrows-alt"></i>
+				</span>
+				<h2>Fouls</h2>
+			</div>
+			<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.fouls.scores"
+			  chart-labels="reportData.yearSpecific.fouls.xLabels" 
+			  chart-options="chartOptions.singleAxis" 
+			  chart-series="reportData.yearSpecific.fouls.legend">
+			</canvas> 
+		</div>
+	</div>
+</div>

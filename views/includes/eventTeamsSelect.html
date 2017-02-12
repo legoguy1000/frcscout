@@ -1,0 +1,42 @@
+<div class="row">
+	<div class="panel panel-default">
+		<div class="panel-body" uib-collapse="optionsCollapse">
+			<div class="form-group col-sm-6">
+				<label>FRC Event: </label>
+				<ui-select
+				ng-model="reportInfo.selectRegional"
+				theme="bootstrap"
+				reset-search-input="true"
+				style="width: 100%">
+					<ui-select-match allow-clear="true" placeholder="Search for Event">{{$select.selected.name}}</ui-select-match>
+					<ui-select-choices repeat="event.event_key as event in eventList.all | filter: $select.search"" group-by="createEventGroups">
+						<div>{{event.name}}</div>
+						<small>{{event.location}}</small>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Teams: </label>
+				<div class="input-group">
+					<ui-select
+					ng-model="reportInfo.teams"
+					theme="bootstrap"
+					reset-search-input="true"
+					style="width: 100%"
+					multiple>
+						<ui-select-match allow-clear="true" placeholder="Search for Teams">{{$item.team_number}} | {{$item.nickname}}</ui-select-match>
+						<ui-select-choices refresh="searchTeams($select)" refresh-delay="300" repeat="team in searchTeamRes">
+							<div class="clearfix">
+								<span>{{team.nickname}}</span>
+								<span class="pull-right">{{team.team_number}}</span>
+							</div>
+						</ui-select-choices>
+					</ui-select>
+					<div class="input-group-btn">
+						<button class="btn btn-info btn-sm" ng-click="getReportData()"><i class="fa fa-arrow-right"></i></button>
+					</div>	
+				</div>	
+			</div>	
+		</div>	
+	</div>		
+</div>

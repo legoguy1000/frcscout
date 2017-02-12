@@ -1,0 +1,24 @@
+<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
+	<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('foul','','','')">
+		<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].foul.length}}</span>
+		Foul 
+	</button>		
+</div>
+<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
+	<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('tech_foul','','','')">
+		<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].tech_foul.length}}</span>
+		Tech Foul
+	</button>
+</div>
+<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
+	<button class="btn btn-warning btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('yellow_card','','','')">
+		<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].yellow_card.length}}</span>
+		Yellow Card
+	</button>
+</div>
+<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
+	<button class="btn btn-danger btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('red_card','','','')">
+		<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].red_card.length}}</span>
+		Red Card
+	</button>
+</div>

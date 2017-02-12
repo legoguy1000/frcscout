@@ -1,0 +1,42 @@
+<div class="row">
+	<div class="panel panel-default">
+		<div class="panel-body" uib-collapse="optionsCollapse">
+			<div class="form-group col-sm-6">
+				<label>FRC Team Number: </label>
+				<div class="input-group">
+					<ui-select
+					ng-model="robotDataEntry.selectTeam"
+					theme="bootstrap"
+					reset-search-input="true"
+					on-select="getRobotInfo()"
+					style="width: 100%">
+						<ui-select-match allow-clear="true" placeholder="Search for Team">{{$select.selected.team_number}} | {{$select.selected.nickname}}</ui-select-match>
+						<ui-select-choices refresh="searchTeams($select)" refresh-delay="300" repeat="team in searchTeamRes">
+							<div class="clearfix">
+								<span>{{team.nickname}}</span>
+								<span class="pull-right">{{team.team_number}}</span>
+							</div>
+						</ui-select-choices>
+					</ui-select>
+					<div class="input-group-btn">
+						<button class="btn btn-info" ng-click="getRobotInfo()" ng-disabled="robotDataEntry.selectTeam==null || robotDataEntry.selectTeam==undefined">
+							<i class="fa fa-refresh"></i>
+						</button>
+					</div>
+				</div>
+				<div class="text-center" style="margin-top:10px">
+					<button class="btn btn-primary" ng-click="updateRobotInfo()" ng-disabled="robotDataEntry.selectTeam==null || robotDataEntry.selectTeam==undefined">Submit</button>
+				</div>
+			</div>
+			<div class="col-sm-6 text-center" ng-hide="robotDataEntry.selectTeam==null || robotDataEntry.selectTeam==undefined">
+				<h2>
+					{{robotDataEntry.selectTeam.nickname}}</br>
+					<small>Team {{robotDataEntry.selectTeam.team_number}}</small>
+				</h2>
+			</div>
+		</div>	
+	</div>		
+</div>
+<div class="row">
+	
+</div>

@@ -1,0 +1,54 @@
+<div ng-controller="main.season2017.reportsGraphs-ctrl">
+	<div class="" ng-include="'views/includes/reportsTop.html'"></div>
+	<div class="row">
+		<div class="row col-lg-12">
+			<div class="col-lg-6 text-center">
+				<h2>Autonomous Goals</h2>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.autoGoals.scores"
+				  chart-labels="reportData.yearSpecific.autoGoals.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.autoGoals.legend">
+				</canvas> 
+			</div>
+			<div class="col-lg-6 text-center">
+				<h2>Teleoperated Goals</h2>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.teleGoals.scores"
+				  chart-labels="reportData.yearSpecific.teleGoals.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.teleGoals.legend">
+				</canvas> 
+			</div>
+		</div>
+		<div class="row col-lg-12">
+			<div class="text-center" ng-class="{'col-lg-12':fullscreen.numGoals, 'col-lg-6':!fullscreen.numGoals}">
+				<div class="">
+					<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('numGoals')">
+						<i class="fa fa-arrows-alt"></i>
+					</span>
+					<h2>Number of Goals Overall</h2>
+				</div>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.numGoals.scores"
+				  chart-labels="reportData.yearSpecific.numGoals.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.numGoals.legend">
+				</canvas> 
+			</div>
+			<div class="text-center" ng-class="{'col-lg-12':fullscreen.gearsDelivered, 'col-lg-6':!fullscreen.gearsDelivered}">
+				<div class="">
+					<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('gearsDelivered')">
+						<i class="fa fa-arrows-alt"></i>
+					</span>
+					<h2>Gears Delivered</h2>
+				</div>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.gearsDelivered.scores"
+				  chart-labels="reportData.yearSpecific.gearsDelivered.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.gearsDelivered.legend">
+				</canvas> 
+			</div>
+		</div>
+		<div class="row col-lg-12">
+			
+		</div>
+	</div>
+</div>

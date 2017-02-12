@@ -1,0 +1,170 @@
+<div class="container">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<i class="fa fa-info-circle"></i>
+			Personal Information
+		</div>
+		<form ng-submit="updatePersonalInfo()">
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="control-label" for="personalInfo.fname">First Name <i class="fa fa-asterisk" aria-hidden="true"></i></label>
+					<input id="personalInfo.fname" type="text" class="form-control" ng-model="personalInfo.fname" required>
+				</div>
+				<div class="form-group">
+					<label class="control-label" for="personalInfo.lname">Last Name <i class="fa fa-asterisk" aria-hidden="true"></i></label>
+					<input id="personalInfo.lname" type="text" class="form-control" ng-model="personalInfo.lname" required>
+				</div>
+				<div class="form-group">
+					<label class="control-label" for="personalInfo.email">Email <i class="fa fa-asterisk" aria-hidden="true"></i></label>
+					<input id="personalInfo.email" type="email" class="form-control" ng-model="personalInfo.email" required readonly>
+				</div>
+				<div class="form-group">
+					<label class="control-label" for="personalInfo.phone">Phone</label>
+					<input id="personalInfo.phone" type="text" class="form-control" ng-model="personalInfo.phone" phone-input>
+				</div>
+			</div>
+			<div class="panel-footer clearfix">
+				<button class="btn btn-primary pull-right" ng-disabled="saving.personal">
+					<span ng-show="saving.personal">Saving...  <i class="fa fa-spinner fa-pulse fa-fw"></i></span>
+					<span ng-hide="saving.personal">Save</span>		
+				</button>
+			</div>
+		</form>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<i class="fa fa-android"></i>
+			Team Information
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<span class="strong">Team: </span>
+						<span ng-show="globalInfo.teamInfo==null">Not Joined</span>
+						<span ng-if="globalInfo.teamInfo!=null">{{globalInfo.teamInfo.team_number}}</span>
+					</div>
+					<div class="form-group" ng-if="globalInfo.teamInfo!=null">
+						<span class="strong">Team Privs: </span>
+						<span class="">{{globalInfo.teamInfo.privs | capitalizeWordsFirst}}</span>
+					</div>
+					<div class="form-group" ng-if="globalInfo.teamInfo!=null">
+						<span class="strong">Status: </span>
+						<span class="">{{globalInfo.teamInfo.status | capitalizeWordsFirst}} as of {{globalInfo.teamInfo.creation}}</span>
+					</div>
+				</div>
+				<div class="col-sm-6 clearfix" ng-if="globalInfo.teamInfo!=null">
+					<img class="img-responsive pull-right" ng-src="{{globalInfo.teamInfo.logo}}"/>
+				</div>
+			</div>
+			<div class="form-group" ng-show="globalInfo.teamInfo==null">
+				<ui-select
+				ng-model="selectTeam.team"
+				theme="bootstrap"
+				ng-disabled=""
+				reset-search-input="true">
+					<ui-select-match allow-clear="true" placeholder="Search for Teams">{{$select.selected.team_number}} {{$select.selected.nickname}}</ui-select-match>
+					<ui-select-choices refresh="searchTeams($select)" refresh-delay="300" repeat="res in teamSearchRes">
+						<span class="clearfix">
+							<span ng-bind-html="trustAsHtml((res.nickname | highlight: $select.search))"></span>
+							<span class="pull-right">
+								<span ng-bind-html="trustAsHtml((res.team_number | highlight: $select.search))"></span>
+							</span>
+						</span>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="form-group" ng-show="globalInfo.teamInfo==null && selectTeam.team!=undefined">
+				<div class="row">
+					<div class="col-sm-6">
+						<table class="table table-hover table-bordered">
+							<tr><td class="strong">Team Number</td><td>{{selectTeam.team.team_number}}</td></tr>
+							<tr><td class="strong">Team Name</td><td>{{selectTeam.team.nickname}}</td></tr>
+							<tr><td class="strong">Region</td><td>{{selectTeam.team.region}}</td></tr>
+							<tr><td class="strong">Country</td><td>{{selectTeam.team.country_name}}</td></tr>
+							<tr><td colspan="2" class="text-center">
+								<span ng-hide="selectTeam.team.account_status">There is not an active account for this team.  </span>
+								<button class="btn btn-large btn-primary" ng-disabled="!selectTeam.team.account_status" ng-show="selectTeam.team.account_status" ng-click="requestTeamJoin()">Join Team</button>
+							</td></tr>
+						</table>
+					</div>
+					<div class="col-sm-6 text-center" ng-hide="selectTeam.team.account_status">
+						<h3>Click below to register your team</h3>
+						<button class="btn btn-lg btn-success" ng-disabled="selectTeam.team.account_status" ng-click="registerTeam()">Register Team</button>
+						<h4>
+							<small>
+								By clicking above, you affirm that you are part of FIRST FRC <b>Team {{selectTeam.team.team_number}}, {{selectTeam.team.nickname}}</b>.  Registering a team of which you are not part will result in your account being banned.  This system requires users to honor the FIRST principle of <i>Gracious Professionalism</i> to allow all users access.
+							</small>
+						</h4>
+					</div>
+					<!-- <div class="col-sm-6 text-center" ng-show="true">
+						<h3>Your Request to join Team {{selectTeam.team.team_number}} has been submitted.</h3>
+						<small>Please contact your team administrator to approve your request.</small>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<i class="fa fa-envelope"></i>
+			Notification Settings
+		</div>
+		<form ng-submit="">
+			<div class="panel-body">
+				<div class="clearfix">
+					<div class="btn-group pull-right">
+						<button class="btn js-push-button" ng-class="{'btn-info':enablePush.status, 'btn-primary':!enablePush.status}" ng-disabled="enablePush.status" ng-click="subscribePush()">
+							Enable Push Messages
+						</button>
+						<button class="btn js-push-button" ng-class="{'btn-info':!enablePush.status, 'btn-primary':enablePush.status}" ng-disabled="!enablePush.status" ng-click="unsubscribePush()">
+							Disable Push Messages
+						</button>
+					</div>
+				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Notification</th>
+							<th>Email</th>
+							<th>Browser (Push)</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Team Membership Status</td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_membership_status-email']"></td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_membership_status-push']"></td>
+						</tr>
+						<tr>
+							<td>Team New Member</td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_new_member-email']"></td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_new_member-push']"></td>
+						</tr>
+						<tr>
+							<td>Team Current Event Changed</td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_current_event_changed-email']"></td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_current_event_changed-push']"></td>
+						</tr>
+						<tr>
+							<td>Team Current Event Schedule Updated</td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_current_event_scheduled_event_updated-email']"></td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_current_event_scheduled_event_updated-push']"></td>
+						</tr>
+						<tr>
+							<td>Team Current Event Match Scores Posted</td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_current_event_match_scores_posted-email']"></td>
+							<td><input type="checkbox" ng-model="notificationPreferences['team_current_event_match_scores_posted-push']"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="panel-footer clearfix">
+				<button class="btn btn-primary pull-right" ng-disabled="saving.name">
+					<span ng-show="saving.name">Saving...  <i class="fa fa-spinner fa-pulse fa-fw"></i></span>
+					<span ng-hide="saving.name">Save</span>		
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,72 @@
+<div ng-controller="main.season2017.reportsTable-ctrl">
+	<div class="" ng-include="'views/includes/eventTeamsSelect.html'"></div>
+	<div class="row">
+		<a ui-sref="main.season{{seasonData.year}}.reportsGraphs({'event':reportInfo.selectRegional, 'teams':compareTeams.join()})">
+			Compare Teams
+		</a>
+		<span> {{compareTeams.join()}}</span>
+	</div>
+	<div class="row">
+		<table ng-table="tableParams" class="table table-hover table-condensed" show-filter="true">
+			<tr ng-repeat="team in $data">
+				<td title="'Team'" filter="{team_number:'number'}" sortable="'team_number'">
+					<span>
+						<span style="cursor:pointer;" ng-click="compareTeamsFunct(team.team_number)"  uib-tooltip="Click to compare teams on various graphs." tooltip-append-to-body="true" tooltip-placement="left">
+							<span ng-show="compareTeams.indexOf(team.team_number)!=-1"><i class="fa fa-check-square-o" aria-hidden="true"></i></span>
+							<span ng-hide="compareTeams.indexOf(team.team_number)!=-1"><i class="fa fa-square-o" aria-hidden="true"></i></span>
+						</span>
+						<span uib-tooltip="{{team.teamInfo.nickname}}" tooltip-append-to-body="true"> {{team.team_number}}</span>
+					</span>
+				</td>
+				<td title="'Rank'" filter="{ranking:'number'}" sortable="'ranking'">
+					{{team.ranking | number:0}}
+				</td>
+				<td title="'Matches Scouted'" filter="{matchesScouted:'number'}" sortable="'matchesScouted'">
+					{{team.matchesScouted | number:0}}
+				</td>
+				<td title="'Alliance Score - Max'" filter="{team_number:'number'}" sortable="'team_number'">
+					{{team.allianceScoresMax | number:1}}
+				</td>
+				<td title="'Alliance Score - Avg per Match'" filter="{team_number:'number'}" sortable="'team_number'">
+					{{team.allianceScoresAvg | number:1}}
+				</td>
+				<td title="'Points - Max'" filter="{totalPointsMax:'number'}" sortable="'totalPointsMax'">
+					{{team.totalPointsMax | number:1}}
+				</td>
+				<td title="'Points - Avg per Match'" filter="{totalPointsAvg:'number'}" sortable="'totalPointsAvg'">
+					<a style="cursor:pointer;" ng-click="openGraphModal(team.team_number,'totalPointsAvg')">{{team.totalPointsAvg | number:1}}</a>
+				</td>
+				<td title="'Auto Points - Max'" filter="{autoPointsMax:'number'}" sortable="'autoPointsMax'">
+					{{team.autoPointsMax | number:1}}
+				</td>
+				<td title="'Auto Points - Avg per Match'" filter="{autoPointsAvg:'number'}" sortable="'autoPointsAvg'">
+					<a style="cursor:pointer;" ng-click="openGraphModal(team.team_number,'autoPointsAvg')">{{team.autoPointsAvg | number:1}}</a>
+				</td>
+				<td title="'Tele Points - Max'" filter="{telePointsMax:'number'}" sortable="'telePointsMax'">
+					{{team.telePointsMax | number:1}}
+				</td>
+				<td title="'Tele Points - Avg per Match'" filter="{telePointsAvg:'number'}" sortable="'telePointsAvg'">
+					<a style="cursor:pointer;" ng-click="openGraphModal(team.team_number,'telePointsAvg')">{{team.telePointsAvg | number:1}}</a>
+				</td>
+				<td title="'High Goals - Max'" filter="{highGoalsMax:'number'}" sortable="'highGoalsMax'">
+					{{team.highGoalsMax | number:1}}
+				</td>
+				<td title="'High Goals - Avg per Match'" filter="{highGoalsAvg:'number'}" sortable="'highGoalsAvg'">
+					<a style="cursor:pointer;" ng-click="openGraphModal(team.team_number,'highGoalsAvg')">{{team.highGoalsAvg | number:1}}</a>
+				</td>
+				<td title="'Low Goals - Max'" filter="{lowGoalsMax:'number'}" sortable="'lowGoalsMax'">
+					{{team.lowGoalsMax | number:1}}
+				</td>
+				<td title="'Low Goals - Avg per Match'" filter="{lowGoalsAvg:'number'}" sortable="'lowGoalsAvg'">
+					<a style="cursor:pointer;" ng-click="openGraphModal(team.team_number,'lowGoalsAvg')">{{team.lowGoalsAvg | number:1}}</a>
+				</td>
+				<td title="'Gears Delivered - Max'" filter="{gearsDeliveredMax:'number'}" sortable="'gearsDeliveredMax'">
+					{{team.gearsDeliveredMax | number:1}}
+				</td>
+				<td title="'Gears Delivered - Avg per Match'" filter="{gearsDeliveredAvg:'number'}" sortable="'gearsDeliveredAvg'">
+					<a style="cursor:pointer;" ng-click="openGraphModal(team.team_number,'gearsDeliveredAvg')">{{team.gearsDeliveredAvg | number:1}}</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

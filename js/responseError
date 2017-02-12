@@ -1,0 +1,33 @@
+responseError: function(rejection) {
+				if (rejection.status === 401) {
+					// Return a new promise
+					var $uibModal = $injector.get('$uibModal');
+					var $auth = $injector.get('$auth');
+					var $rootScope = $injector.get('$rootScope');
+					//var $scope = $injector.get('$scope');
+					
+					var openLoginModal = function () {
+						var modalInstance = $uibModal.open({
+							animation: true,
+							templateUrl: 'loginModal.html',
+							controller: 'loginModal-ctrl',
+							resolve: {}
+						});
+						modalInstance.result.then(function (data) {
+								if(data.auth)
+								{
+									$rootScope.$broadcast('afterLoginAction');
+									return $injector.get('$http')(rejection.config);
+								}
+								
+							}, function () {
+								//$log.info('Modal dismissed at: ' + new Date());
+						});
+					};
+					openLoginModal();
+				}
+				/* If not a 401, do nothing with this error.
+				* This is necessary to make a `responseError`
+				* interceptor a no-op. */
+				return $q.reject(rejection);
+			}

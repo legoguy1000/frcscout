@@ -1,0 +1,38 @@
+<div class="row">
+	<div class="panel panel-default">
+		<div class="panel-body" uib-collapse="optionsCollapse">
+			<div class="form-group col-sm-6">
+				<label>FRC Event: </label>
+				<ui-select
+				ng-model="matchDataEntry.selectRegional"
+				theme="bootstrap"
+				reset-search-input="true"
+				style="width: 100%"
+				on-select="getMatchInfo()"
+				ng-disabled="(matchDataEntry.matchStarted && !gameOver) || loadingData">
+					<ui-select-match placeholder="Search for Event">{{$select.selected.name}}</ui-select-match>
+					<ui-select-choices repeat="event.event_key as event in eventList.all | filter: $select.search"" group-by="createEventGroups">
+						<div>{{event.name}}</div>
+						<small>{{event.location}}</small>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Match Number: </label>
+				<div class="input-group">
+					<span class="input-group-btn">
+						<button class="btn btn-warning" ng-click="increaseMatch()" ng-disabled="matchInfo.last_match || (matchDataEntry.matchStarted && !gameOver) || loadingData"><i class="fa fa-plus"></i></button>
+						<button class="btn btn-primary" ng-click="decreaseMatch()" ng-disabled="matchDataEntry.matchNumber<=1 || (matchDataEntry.matchStarted && !gameOver) || loadingData"><i class="fa fa-minus"></i></button>
+					</span>
+					<input class="form-control" type="number" ng-model="matchDataEntry.matchNumber" min="1" ng-change="getMatchInfo()" ng-readonly="(matchDataEntry.matchStarted && !gameOver) || loadingData"/>
+					<span class="input-group-btn">
+						<button class="btn btn-info" ng-click="getMatchInfo()" ng-disabled="loadingData"><i class="fa fa-refresh" ng-class="{'fa-spin':loadingData}"></i></button>
+					</span>
+				</div>
+				<div class="clearfix">
+					<a class="pull-right" ui-sref="main.season{{seasonData.year}}.matchDataEntry({'event':matchDataEntry.selectRegional,'match':matchDataEntry.matchNumber})">Direct Link</a>
+				</div>
+			</div>	
+		</div>	
+	</div>		
+</div>

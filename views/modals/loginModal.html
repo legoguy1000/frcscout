@@ -1,0 +1,21 @@
+<div class="modal-header">
+	<h3 class="modal-title" ng-show="title == ''">Login with a Linked Account</h3>
+	<h3 class="modal-title" ng-show="title != ''">{{title}}</h3>
+</div>
+<div class="modal-body">
+	<button class="btn btn-block btn-social btn-lg btn-google" ng-click="authenticate('google')">
+		<span class="fa fa-google-plus"></span><span>Sign in with Google+</span>
+	</button>
+	<button class="btn btn-block btn-social btn-lg btn-facebook" ng-click="authenticate('facebook')">
+		<span class="fa fa-facebook"></span><span>Sign in with Facebook</span>
+	</button>
+	<button class="btn btn-block btn-social btn-lg btn-microsoft" ng-click="authenticate('live')">
+		<span class="fa fa-windows"></span><span>Sign in with Microsoft Live</span>
+	</button>
+	<!-- <button class="btn btn-block btn-social btn-lg btn-linkedin" ng-click="authenticate('linkedin')">
+		<span class="fa fa-linkedin"></span><span>Sign in with LinkedIn</span>
+	</button> -->
+</div>
+<div class="modal-footer">
+	<button class="btn btn-warning" type="button" ng-click="cancel()">Close</button>
+</div>

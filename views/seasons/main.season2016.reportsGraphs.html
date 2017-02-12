@@ -1,0 +1,81 @@
+<div ng-controller="main.season2016.reportsGraphs-ctrl">
+	<div class="" ng-include="'views/includes/reportsTop.html'"></div>
+	<div class="row">
+		<div class="row col-lg-12">
+			<div class="col-lg-6 text-center">
+				<h2>Autonomous Goals</h2>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.autoGoals.scores"
+				  chart-labels="reportData.yearSpecific.autoGoals.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.autoGoals.legend">
+				</canvas> 
+			</div>
+			<div class="col-lg-6 text-center">
+				<h2>Teleoperated Goals</h2>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.teleGoals.scores"
+				  chart-labels="reportData.yearSpecific.teleGoals.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.teleGoals.legend">
+				</canvas> 
+			</div>
+		</div>
+		<div class="row col-lg-12">
+			<div class="text-center" ng-class="{'col-lg-12':fullscreen.defenseCrossingsTimes, 'col-lg-6':!fullscreen.defenseCrossingsTimes}">
+				<div class="">
+					<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('defenseCrossingsTimes')">
+						<i class="fa fa-arrows-alt"></i>
+					</span>
+					<h2>Avg. Defense Cross Times</h2>
+				</div>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.defenseCrossingsTimes.scores"
+				  chart-labels="reportData.yearSpecific.defenseCrossingsTimes.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.defenseCrossingsTimes.legend">
+				</canvas> 
+			</div>
+			<div class="text-center" ng-class="{'col-lg-12':fullscreen.defenseAttempts, 'col-lg-6':!fullscreen.defenseAttempts}">
+				<div class="">
+					<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('defenseAttempts')">
+						<i class="fa fa-arrows-alt"></i>
+					</span>
+					<h2>Defense Cross Success Percentage</h2>
+				</div>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.defenseAttempts.scores"
+				  chart-labels="reportData.yearSpecific.defenseAttempts.xLabels" 
+				  chart-options="chartOptions.singleAxis" 
+				  chart-series="reportData.yearSpecific.defenseAttempts.legend">
+				</canvas> 
+			</div>
+		</div>
+		<div class="row col-lg-12">
+			<div class="text-center" ng-class="{'col-lg-12':fullscreen.highGoalsTimes, 'col-lg-6':!fullscreen.highGoalsTimes}">
+				<div class="">
+					<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('highGoalsTimes')">
+						<i class="fa fa-arrows-alt"></i>
+					</span>
+					<h2>Average Time for High Goal</h2>
+				</div>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.highGoalsTimes.scores"
+				  chart-labels="reportData.yearSpecific.highGoalsTimes.xLabels" 
+				  chart-options="" 
+				  chart-series="r"
+				  chart-dataset-override="">
+				</canvas> 
+			</div>
+			<div class="text-center" ng-class="{'col-lg-12':fullscreen.lowGoalsTimes, 'col-lg-6':!fullscreen.lowGoalsTimes}">
+				<div class="">
+					<span class="pull-right" style="cursor:pointer" ng-click="makeFullscreen('lowGoalsTimes')">
+						<i class="fa fa-arrows-alt"></i>
+					</span>
+					<h2>Average Time for Low Goal</h2>
+				</div>
+				<canvas class="chart chart-bar" chart-data="reportData.yearSpecific.lowGoalsTimes.scores"
+				  chart-labels="reportData.yearSpecific.lowGoalsTimes.xLabels" 
+				  chart-options="" 
+				  chart-series=""
+				  chart-dataset-override="">
+				</canvas> 
+			</div>
+		</div>
+	</div>
+</div>
