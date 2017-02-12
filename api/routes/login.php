@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'].'/site/includes/libraries/google-api-php-client-2.0.0/src/Google/autoload.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/site/includes/libraries/google-api-php-client-2.0.0/vendor/autoload.php');
 use \Firebase\JWT\JWT;
 
 $app->group('/login', function () use ($app) {
