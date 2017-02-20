@@ -37,8 +37,8 @@
 		<div class="col-sm-6 list-group list-group-hover">
 			<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
 				<span>{{team.team_number}}</span>
-				<span class="hidden-sm"> | </span><br class="visible-sm">
-				<span>{{team.nickname}}</span>
+				<span class="hidden-xs"> | </span><br class="visible-sm">
+				<span	>{{team.nickname}}</span>
 			</div>
 		</div>
 	</div>
