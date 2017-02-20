@@ -7,19 +7,19 @@
 	</span>
 </div>
 <div class="row" ng-hide="matchInfo.ready_to_start==false">
-	<div class="col-xs-6 col-sm-2">
-		<div class="text-center match-score-box" style="background:blue;">
+	<div class="col-xs-6">
+		<div class="col-sm-4 text-center match-score-box" style="background:blue;">
 			<span ng-hide="matchInfo.blue_score=='-1'">{{matchInfo.blue_score}}</span>
 			<span ng-show="matchInfo.blue_score=='-1'" ng-click="openScoreModal()">--</span>
 		</div>
-		<div class="visible-xs list-group list-group-hover"> <!--<span class="hidden-sm"> | </span><br class="visible-sm">-->
+		<div class="col-sm-6 list-group list-group-hover">
 			<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.blue" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
 				<div>{{team.team_number}}</div>
 				<div>{{team.nickname}}</div>
 			</div>
 		</div>
 	</div>
-	<div class="hidden-xs col-sm-4 list-group list-group-hover"> <!--<span class="hidden-sm"> | </span><br class="visible-sm">-->
+	<!-- <div class="hidden-xs col-sm-4 list-group list-group-hover">
 		<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.blue" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
 			<div>{{team.team_number}} | {{team.nickname}}</div>
 		</div>
@@ -28,13 +28,13 @@
 		<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
 			<div>{{team.team_number}} | {{team.nickname}}</div>
 		</div>
-	</div>
-	<div class="col-xs-6 col-sm-2">
-		<div class="text-center match-score-box" style="background:red;">
+	</div> -->
+	<div class="col-xs-6">
+		<div class="col-sm-4 text-center match-score-box" style="background:red;">
 			<span ng-hide="matchInfo.red_score=='-1'">{{matchInfo.red_score}}</span>
 			<span ng-show="matchInfo.red_score=='-1'" ng-click="openScoreModal()">--</span>
 		</div>
-		<div class="visible-xs list-group list-group-hover"> <!--<span class="hidden-sm"> | </span><br class="visible-sm">-->
+		<div class="col-sm-6 list-group list-group-hover">
 			<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
 				<div>{{team.team_number}}</div>
 				<div>{{team.nickname}}</div>
