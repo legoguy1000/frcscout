@@ -1,5 +1,5 @@
 <?php
-require($_SERVER['DOCUMENT_ROOT'].'/site/includes/functions/getConfigFile.php');
+//require($_SERVER['DOCUMENT_ROOT'].'/site/includes/functions/getConfigFile.php');
 
 // mysql definitions
 define("DB_SERVER", getIniProp('db_host')); //your mysql server
