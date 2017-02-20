@@ -13,6 +13,7 @@ function getIniProp($prop)
 	{
 		$value = $ini[$prop];
 	}
+	error_log($prop.' -- '.$value, 0);
 	return $value;
 }
 
