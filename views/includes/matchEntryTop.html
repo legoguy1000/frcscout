@@ -27,6 +27,13 @@
 				<span>{{team.nickname}}</span>
 			</div>
 		</div>
+		<div class="col-sm-4 list-group list-group-hover">
+			<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
+				<span class="strong">{{team.team_number}}</span>
+				<br/>
+				<span>{{team.nickname}}</span>
+			</div>
+		</div>
 	<!-- </div> -->
 	<!-- <div class="hidden-xs col-sm-4 list-group list-group-hover">
 		<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.blue" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
@@ -39,14 +46,6 @@
 		</div>
 	</div> -->
 	<!-- <div class="col-xs-6"> -->
-		
-		<div class="col-sm-4 list-group list-group-hover">
-			<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
-				<span class="strong">{{team.team_number}}</span>
-				<br/>
-				<span>{{team.nickname}}</span>
-			</div>
-		</div>
 	<!-- </div> -->
 </div>
 <div class="row form-group text-center" ng-show="matchDataEntry.matchStarted == false && matchDataEntry.completed">
