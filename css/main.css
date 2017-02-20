@@ -96,3 +96,7 @@
 #toast-container {
 	z-index:1500;
 }
+
+.btn .word-wrap {
+	white-space: normal;
+}
