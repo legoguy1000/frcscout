@@ -2,7 +2,9 @@
 
 require $_SERVER['DOCUMENT_ROOT'].'/site/includes/vendor/autoload.php';
 
+include($_SERVER['DOCUMENT_ROOT'].'/site/includes/functions/getConfigFile.php');
 include($_SERVER['DOCUMENT_ROOT'].'/site/includes/db.php');
+//
 include($_SERVER['DOCUMENT_ROOT'].'/site/includes/functions/user_functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/site/includes/functions/general_functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/site/includes/functions/match_functions.php');
