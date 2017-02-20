@@ -18,7 +18,7 @@ function getPointValuesByYear($year)
 		$data['auto_low_goal'] = 1/3;
 		$data['tele_high_goal'] = 1/3;
 		$data['tele_low_goal'] = 1/9;
-		$data['auto_cross_baseline'] = 5;
+		$data['cross_baseline'] = 5;
 		$data['ready_takeoff'] = 50;
 	}
 	return $data;
