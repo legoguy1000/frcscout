@@ -14,13 +14,13 @@
 				<span ng-show="matchInfo.blue_score=='-1'" ng-click="openScoreModal()">--</span>
 			</div>
 		</div>
-		<div class="col-xs-6 col-sm-2">
+		<div class="col-xs-6 col-sm-2 col-sm-pull-8">
 			<div class="text-center match-score-box" style="background:red;">
 				<span ng-hide="matchInfo.red_score=='-1'">{{matchInfo.red_score}}</span>
 				<span ng-show="matchInfo.red_score=='-1'" ng-click="openScoreModal()">--</span>
 			</div>
 		</div>
-		<div class="col-sm-4 col-xs-6">	
+		<div class="col-sm-4 col-xs-6 col-sm-pull-2">	
 			<div class="list-group list-group-hover">
 				<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.blue" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
 					<span class="strong">{{team.team_number}}</span>
@@ -29,7 +29,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-4 col-xs-6">
+		<div class="col-sm-4 col-xs-6 col-sm-pull-2">
 			<div class="list-group list-group-hover">
 				<div class="list-group-item" ng-class="{'active':team.team_number == matchDataEntry.team_number}" ng-repeat="team in matchInfo.alliances.red" ng-click="selectTeam(team.team_number)" style="cursor:pointer;">
 					<span class="strong">{{team.team_number}}</span>
