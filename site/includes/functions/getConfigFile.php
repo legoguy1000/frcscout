@@ -13,8 +13,6 @@ function getIniProp($prop)
 	{
 		$value = $ini[$prop];
 	}
-	error_log($_SERVER['DOCUMENT_ROOT'].'/site/includes/config.ini', 0);
-	error_log($prop.' -- '.$value, 0);
 	return $value;
 }
 
