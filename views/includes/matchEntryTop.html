@@ -8,11 +8,11 @@
 </div>
 <div class="row" ng-hide="matchInfo.ready_to_start==false">
 	<!-- <div class="col-xs-6"> -->
-		<div class="col-sm-2 text-center match-score-box" style="background:blue;">
+		<div class="col-xs-6 col-sm-2 text-center match-score-box" style="background:blue;">
 			<span ng-hide="matchInfo.blue_score=='-1'">{{matchInfo.blue_score}}</span>
 			<span ng-show="matchInfo.blue_score=='-1'" ng-click="openScoreModal()">--</span>
 		</div>
-		<div class="col-sm-2 text-center match-score-box" style="background:red;">
+		<div class="col-xs-6 col-sm-2 text-center match-score-box" style="background:red;">
 			<span ng-hide="matchInfo.red_score=='-1'">{{matchInfo.red_score}}</span>
 			<span ng-show="matchInfo.red_score=='-1'" ng-click="openScoreModal()">--</span>
 		</div>
