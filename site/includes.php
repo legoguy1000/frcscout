@@ -1,4 +1,6 @@
 <?php
+ini_set("error_reporting", E_ALL);
+ini_set("expose_php", false);
 
 require $_SERVER['DOCUMENT_ROOT'].'/site/includes/vendor/autoload.php';
 
