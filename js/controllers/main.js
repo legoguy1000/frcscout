@@ -137,7 +137,7 @@ angular
 			console.log("Chat Web Soccket Connection is closed..."); 
 		};
 	}
-	$scope.startServerTime();
+	//$scope.startServerTime();
 	
 	$scope.minimizeChatBox = function()
 	{

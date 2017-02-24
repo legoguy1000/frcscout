@@ -24,6 +24,7 @@ angular.module('frcScout')
 		'completed': matchInfo.completed,
 		'ready_to_start': matchInfo.ready_to_start,
 	};
+	$scope.serverTime = 0;
 	
 	$scope.eventList = eventList;
 	$scope.matchInfo = matchInfo;
@@ -131,7 +132,7 @@ angular.module('frcScout')
 			'event': $scope.matchDataEntry.selectRegional,
 			'match_number': $scope.matchDataEntry.matchNumber,
 		}
-		console.log('Start Match unix: '+$scope.globalInfo.serverTime);
+		console.log('Start Match unix: '+$scope.serverTime);
 		matches.startMatch(data).then(function(response) {
 			if(response.status == false)
 			{
@@ -168,9 +169,9 @@ angular.module('frcScout')
 		if($scope.matchDataEntry.matchStarted == true)
 		{
 			$scope.gameOver = false;
-			var timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
+			var timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
 			if(timer >= 0) { $scope.timer = timer; }
-			console.log('Start unix: '+$scope.globalInfo.serverTime);
+			console.log('Start unix: '+$scope.serverTime);
 			console.log('SFASD: '+$scope.matchDataEntry.match_start_time);
 			console.log($scope.timer);
 			timerCount();
@@ -202,7 +203,7 @@ angular.module('frcScout')
 		{
 			console.log($scope.timer);
 			timer = $timeout(timerCount, 100);
-			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
+			$scope.timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
 		}
 	}
 	
@@ -214,6 +215,23 @@ angular.module('frcScout')
 		closeMatchWS();//
 		if($scope.matchDataEntry.completed==false && $scope.matchDataEntry.selectRegional!='' && $scope.matchDataEntry.matchNumber && $scope.matchDataEntry.ready_to_start)
 		{	
+			$scope.serverTimeWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/time');
+			$scope.serverTimeWS.onopen = function(){
+				// Web Socket is connected, send data using send()
+				console.log("Server Time Web Soccket Connection is open..."); 
+			}
+			$scope.serverTimeWS.onmessage = function (e) { 
+				$scope.$apply(function () {
+					var messageData = JSON.parse(e.data);
+					$scope.serverTime = messageData.server_time;		
+				});
+			};
+			$scope.serverTimeWS.onclose = function() { 
+				// websocket is closed.
+				console.log("Chat Web Soccket Connection is closed..."); 
+			};
+		
+		
 			console.log("Match Data WS Starting for "+$scope.matchDataEntry.selectRegional+"_qm"+$scope.matchDataEntry.matchNumber);
 			$scope.matchDataWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/match?token='+$auth.getToken()+'&event='+$scope.matchDataEntry.selectRegional+'&match='+$scope.matchDataEntry.matchNumber);
 			var match_key = $scope.matchDataEntry.selectRegional+'_qm'+$scope.matchDataEntry.matchNumber;
@@ -280,7 +298,7 @@ angular.module('frcScout')
 					{
 						if($scope.matchDataEntry.matchStarted == false)
 						{
-							console.log('Receive ES unix: '+$scope.globalInfo.serverTime);
+							console.log('Receive ES unix: '+$scope.serverTime);
 							var MdesStart = JSON.parse(e.data);
 							$scope.matchDataEntry.matchStarted = true;
 							$scope.matchDataEntry.match_start_time = MdesStart.match_start;
@@ -303,6 +321,11 @@ angular.module('frcScout')
 			$scope.matchDataWS.close();
 		}
 		$scope.MatchDataWS = undefined;
+		if($scope.serverTimeWS != undefined)
+		{
+			$scope.serverTimeWS.close();
+		}
+		$scope.serverTimeWS = undefined;
 	}
 	
 	
