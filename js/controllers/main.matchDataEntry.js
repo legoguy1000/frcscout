@@ -7,7 +7,7 @@
  * Controller of the frcScout
  */
 angular.module('frcScout')
-.controller('main.matchDataEntry-ctrl', function($scope,$log, $sce, $state, $timeout, $auth, $uibModal, toastr, matches, robots, eventList, eventInit, matchInit, matchInfo) {
+.controller('main.matchDataEntry-ctrl', function($scope,$rootScope, $log, $sce, $state, $timeout, $auth, $uibModal, toastr, matches, robots, eventList, eventInit, matchInit, matchInfo) {
 	$scope.$on('$stateChangeStart', function () {
 		$scope.stopTimer();
 	});
@@ -168,15 +168,15 @@ angular.module('frcScout')
 		if($scope.matchDataEntry.matchStarted == true)
 		{
 			$scope.gameOver = false;
-			$scope.timer = Date.now() / 1000 - $scope.matchDataEntry.match_start_time;
-			console.log('Start unix: '+Date.now() / 1000);
+			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
+			console.log('Start unix: '+$scope.globalInfo.serverTime);
 			console.log($scope.timer);
-			timerCount();
+		//	timerCount();
 		}
 	}
-	function timerCount() 
+/* 	function timerCount() 
 	{
-		if ($scope.timer >= 151)
+		if ($scope.timer >= 150)
 		{
 			$scope.timer = 150;
 		}
@@ -191,19 +191,37 @@ angular.module('frcScout')
 		}
 		else
 		{
-			$timeout.cancel(timerCount);
+			//$timeout.cancel(timerCount);
 			$scope.gameOver = true;
-			
-		}
-		
-		if ($scope.timer < 150)
+		}		
+	} */
+	$rootScope.$on('serverTimeUpdate', function(msg, data) {
+		if ($scope.matchDataEntry.matchStarted == true && $scope.gameOver == false)
 		{
 			console.log($scope.timer);
-			timer = $timeout(timerCount, 100);
-			$scope.timer = Date.now() / 1000 - $scope.matchDataEntry.match_start_time;
+			//timer = $timeout(timerCount, 100);
+			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
+			
+			if ($scope.timer >= 150)
+			{
+				$scope.timer = 150;
+			}
+			
+			if ($scope.timer < 16)
+			{
+				$scope.gameMode = 'Autonomous';
+			}
+			else if ($scope.timer < 150)
+			{
+				$scope.gameMode = 'Teleoperated';
+			}
+			else
+			{
+				//$timeout.cancel(timerCount);
+				$scope.gameOver = true;
+			}
 		}
-	}
-	
+	});
 	
 
 	var startmatchDataWS = function()
