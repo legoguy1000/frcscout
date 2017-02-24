@@ -170,6 +170,7 @@ angular.module('frcScout')
 			$scope.gameOver = false;
 			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
 			console.log('Start unix: '+$scope.globalInfo.serverTime);
+			console.log('SFASD: '+$scope.matchDataEntry.match_start_time);
 			console.log($scope.timer);
 			timerCount();
 		}
