@@ -195,7 +195,7 @@ angular.module('frcScout')
 			$scope.gameOver = true;
 		}		
 	} */
-	$rootScope.$on('serverTimeUpdate', function(msg, data) {
+	$scope.$on('serverTimeUpdate', function() {
 		if ($scope.matchDataEntry.matchStarted == true && $scope.gameOver == false)
 		{
 			console.log("Server Time: "+$scope.globalInfo.serverTime); 
