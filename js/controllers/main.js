@@ -127,7 +127,8 @@ angular
 		$scope.serverTimeWS.onmessage = function (e) { 
 			$scope.$apply(function () {
 				var messageData = JSON.parse(e.data);
-				$scope.globalInfo.serverTime = messageData.server_time;					
+				$scope.globalInfo.serverTime = messageData.server_time;		
+				$rootScope.$broadcast('serverTimeUpdate');
 			});
 		};
 
