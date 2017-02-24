@@ -198,6 +198,7 @@ angular.module('frcScout')
 	$rootScope.$on('serverTimeUpdate', function(msg, data) {
 		if ($scope.matchDataEntry.matchStarted == true && $scope.gameOver == false)
 		{
+			console.log("Server Time: "+$scope.globalInfo.serverTime); 
 			console.log($scope.timer);
 			//timer = $timeout(timerCount, 100);
 			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
