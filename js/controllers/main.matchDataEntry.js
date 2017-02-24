@@ -7,7 +7,7 @@
  * Controller of the frcScout
  */
 angular.module('frcScout')
-.controller('main.matchDataEntry-ctrl', function($scope,$rootScope, $log, $sce, $state, $timeout, $auth, $uibModal, toastr, matches, robots, eventList, eventInit, matchInit, matchInfo) {
+.controller('main.matchDataEntry-ctrl', function($scope,$log, $sce, $state, $timeout, $auth, $uibModal, toastr, matches, robots, eventList, eventInit, matchInit, matchInfo) {
 	$scope.$on('$stateChangeStart', function () {
 		$scope.stopTimer();
 	});
@@ -131,7 +131,7 @@ angular.module('frcScout')
 			'event': $scope.matchDataEntry.selectRegional,
 			'match_number': $scope.matchDataEntry.matchNumber,
 		}
-		console.log('Start Match unix: '+Date.now() / 1000);
+		console.log('Start Match unix: '+$scope.globalInfo.serverTime);
 		matches.startMatch(data).then(function(response) {
 			if(response.status == false)
 			{
@@ -171,12 +171,12 @@ angular.module('frcScout')
 			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
 			console.log('Start unix: '+$scope.globalInfo.serverTime);
 			console.log($scope.timer);
-		//	timerCount();
+			timerCount();
 		}
 	}
-/* 	function timerCount() 
+	function timerCount() 
 	{
-		if ($scope.timer >= 150)
+		if ($scope.timer >= 151)
 		{
 			$scope.timer = 150;
 		}
@@ -191,38 +191,19 @@ angular.module('frcScout')
 		}
 		else
 		{
-			//$timeout.cancel(timerCount);
+			$timeout.cancel(timerCount);
 			$scope.gameOver = true;
-		}		
-	} */
-	$scope.$on('serverTimeUpdate', function() {
-		if ($scope.matchDataEntry.matchStarted == true && $scope.gameOver == false)
-		{
-			console.log("Server Time: "+$scope.globalInfo.serverTime); 
-			console.log($scope.timer);
-			//timer = $timeout(timerCount, 100);
-			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
 			
-			if ($scope.timer >= 150)
-			{
-				$scope.timer = 150;
-			}
-			
-			if ($scope.timer < 16)
-			{
-				$scope.gameMode = 'Autonomous';
-			}
-			else if ($scope.timer < 150)
-			{
-				$scope.gameMode = 'Teleoperated';
-			}
-			else
-			{
-				//$timeout.cancel(timerCount);
-				$scope.gameOver = true;
-			}
 		}
-	});
+		
+		if ($scope.timer < 150)
+		{
+			console.log($scope.timer);
+			timer = $timeout(timerCount, 100);
+			$scope.timer = $scope.globalInfo.serverTime - $scope.matchDataEntry.match_start_time;
+		}
+	}
+	
 	
 
 	var startmatchDataWS = function()
@@ -297,7 +278,7 @@ angular.module('frcScout')
 					{
 						if($scope.matchDataEntry.matchStarted == false)
 						{
-							console.log('Receive ES unix: '+Date.now() / 1000);
+							console.log('Receive ES unix: '+$scope.globalInfo.serverTime);
 							var MdesStart = JSON.parse(e.data);
 							$scope.matchDataEntry.matchStarted = true;
 							$scope.matchDataEntry.match_start_time = MdesStart.match_start;
