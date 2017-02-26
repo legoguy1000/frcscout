@@ -229,9 +229,7 @@ angular.module('frcScout')
 		{
 			console.log($scope.timer);
 			timer = $timeout(timerCount, 100);
-			if($scope.serverTime <= 0) {
-				$scope.timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
-			}
+			$scope.timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
 		}
 	}
 
