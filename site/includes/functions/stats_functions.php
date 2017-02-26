@@ -266,6 +266,7 @@ function getRobotOptionsByYear($year)
 			'climb_rope' =>  '',
 			'fuel_hopper' =>  '',
 			'loading_station' =>  '',
+			'floor_pickup' =>  '',
 			'fuel_capacity' =>  ''
 		);
 	}
