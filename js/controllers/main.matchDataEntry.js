@@ -24,7 +24,7 @@ angular.module('frcScout')
 		'completed': matchInfo.completed,
 		'ready_to_start': matchInfo.ready_to_start,
 	};
-	$scope.serverTime = matchInit.server_time;
+	$scope.serverTime = matchInfo.server_time;
 	var timeDiff = $scope.serverTime - (Date.now() / 1000);
 	console.log("timeDiff: "+timeDiff);
 	console.log("Server Time: "+$scope.serverTime);
