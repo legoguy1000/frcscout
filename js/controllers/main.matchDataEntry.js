@@ -24,8 +24,9 @@ angular.module('frcScout')
 		'completed': matchInfo.completed,
 		'ready_to_start': matchInfo.ready_to_start,
 	};
-	$scope.serverTime = 0;
-	$scope.serverTimeWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/time');
+	$scope.serverTime = matchInit.server_time;
+	var timeDiff = $scope.serverTime - (Date.now() / 1000);
+	/*$scope.serverTimeWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/time');
 	$scope.serverTimeWS.onopen = function(){
 		// Web Socket is connected, send data using send()
 		console.log("Server Time Web Soccket Connection is open...");
@@ -43,7 +44,7 @@ angular.module('frcScout')
 	$scope.serverTimeWS.onclose = function() {
 		// websocket is closed.
 		console.log("Chat Web Soccket Connection is closed...");
-	};
+	};*/
 
 	$scope.eventList = eventList;
 	$scope.matchInfo = matchInfo;
@@ -90,6 +91,8 @@ angular.module('frcScout')
 				$scope.matchDataEntry.data = response.match_data.team_data;
 				$scope.matchDataEntry.completed = response.completed;
 				$scope.matchDataEntry.ready_to_start = response.ready_to_start;
+				$scope.serverTime = response.server_time;
+				var timeDiff = $scope.serverTime - (Date.now() / 1000);
 				startmatchDataWS();
 				setStartTime();
 			});
@@ -188,7 +191,7 @@ angular.module('frcScout')
 		if($scope.matchDataEntry.matchStarted == true)
 		{
 			$scope.gameOver = false;
-			var timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
+			var timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
 			if(timer >= 0) { $scope.timer = timer; }
 			console.log('Start unix: '+$scope.serverTime);
 			console.log('SFASD: '+$scope.matchDataEntry.match_start_time);
@@ -223,7 +226,7 @@ angular.module('frcScout')
 			console.log($scope.timer);
 			timer = $timeout(timerCount, 100);
 			if($scope.serverTime <= 0) {
-				$scope.timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
+				$scope.timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
 			}
 		}
 	}
