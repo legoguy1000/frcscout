@@ -11,9 +11,9 @@ angular.module('frcScout')
 	$scope.$on('$stateChangeStart', function () {
 		$scope.stopTimer();
 	});
-	
+
 	$scope.loadingData = false;
-	
+
 	$scope.matchDataEntry = {
 		'selectRegional': eventInit,
 		'matchNumber': matchInit.match_num,
@@ -24,18 +24,40 @@ angular.module('frcScout')
 		'completed': matchInfo.completed,
 		'ready_to_start': matchInfo.ready_to_start,
 	};
-	$scope.serverTime = 0;
-	
+	$scope.serverTime = matchInfo.server_time;
+	var timeDiff = $scope.serverTime - (Date.now() / 1000);
+	console.log("timeDiff: "+timeDiff);
+	console.log("Server Time: "+$scope.serverTime);
+	/*$scope.serverTimeWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/time');
+	$scope.serverTimeWS.onopen = function(){
+		// Web Socket is connected, send data using send()
+		console.log("Server Time Web Soccket Connection is open...");
+	}
+	$scope.serverTimeWS.onmessage = function (e) {
+		$scope.$apply(function () {
+			var messageData = JSON.parse(e.data);
+			$scope.serverTime = messageData.server_time;
+		});
+	};
+	$scope.serverTimeWS.onclose = function() {
+		// websocket is closed.
+		console.log("Chat Web Soccket Connection is closed...");
+	};
+	$scope.serverTimeWS.onclose = function() {
+		// websocket is closed.
+		console.log("Chat Web Soccket Connection is closed...");
+	};*/
+
 	$scope.eventList = eventList;
 	$scope.matchInfo = matchInfo;
 	$scope.pointValues = {};
 	$scope.robotData = {};
-	
+
 	$scope.getMatchInfo = function()
 	{
 		getMatchInfo();
 	}
-	
+
 	$scope.increaseMatch = function(event){
 		$scope.matchDataEntry.matchNumber = $scope.matchDataEntry.matchNumber+1;
 		getMatchInfo();
@@ -51,10 +73,10 @@ angular.module('frcScout')
 	$scope.createEventGroups = function(event){
 		return  event.status;
 	};
-	
+
 	function getMatchInfo()
 	{
-		
+
 		var event = $scope.matchDataEntry.selectRegional;
 		var match = $scope.matchDataEntry.matchNumber;
 		closeMatchWS();
@@ -71,19 +93,23 @@ angular.module('frcScout')
 				$scope.matchDataEntry.data = response.match_data.team_data;
 				$scope.matchDataEntry.completed = response.completed;
 				$scope.matchDataEntry.ready_to_start = response.ready_to_start;
+				$scope.serverTime = response.server_time;
+				var timeDiff = $scope.serverTime - (Date.now() / 1000);
+				console.log("timeDiff: "+timeDiff);
+				console.log("Server Time: "+$scope.serverTime);
 				startmatchDataWS();
 				setStartTime();
 			});
 		}
 	}
-	
+
 	function getPointsValues()
 	{
 		matches.getPointsByYear($scope.season).then(function(response) {
 			$scope.pointValues = response;
 		});
 	}
-	
+
 	$scope.selectTeam = function(team)
 	{
 		if($scope.matchDataEntry.team_number == team)
@@ -98,7 +124,7 @@ angular.module('frcScout')
 			{
 				var year = $scope.season;
 				var team = $scope.matchDataEntry.team_number;
-				robots.getRobotsByTeamNumberAndYear(team, year).then(function(response){ 
+				robots.getRobotsByTeamNumberAndYear(team, year).then(function(response){
 					if(response.data != null && response.data.length!=0)
 					{
 						$scope.robotData = response.data;
@@ -125,7 +151,7 @@ angular.module('frcScout')
 			toastr[response.type](response.msg, 'Match Data');
 		});
 	}
-	
+
 	$scope.startMatch = function()
 	{
 		var data = {
@@ -155,21 +181,22 @@ angular.module('frcScout')
 		$scope.gameOver = false;
 		$scope.gameMode = '';
 		$scope.timer = 0;
-		
-		if($scope.MatchDataWS != undefined)
+
+		if($scope.MatchDataWS != undefined || $scope.serverTimeWS != undefined)
 		{
 			closeMatchWS();
 		}
 		$scope.$broadcast('matchStopTimer');
 	}
-	
 
-	var setStartTime = function() 
+
+	var setStartTime = function()
 	{
 		if($scope.matchDataEntry.matchStarted == true)
 		{
 			$scope.gameOver = false;
-			var timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
+			$scope.timer = 0;
+			var timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
 			if(timer >= 0) { $scope.timer = timer; }
 			console.log('Start unix: '+$scope.serverTime);
 			console.log('SFASD: '+$scope.matchDataEntry.match_start_time);
@@ -177,13 +204,13 @@ angular.module('frcScout')
 			timerCount();
 		}
 	}
-	function timerCount() 
+	function timerCount()
 	{
 		if ($scope.timer >= 151)
 		{
 			$scope.timer = 150;
 		}
-		
+
 		if ($scope.timer < 16)
 		{
 			$scope.gameMode = 'Autonomous';
@@ -196,55 +223,38 @@ angular.module('frcScout')
 		{
 			$timeout.cancel(timerCount);
 			$scope.gameOver = true;
-			
+
 		}
-		
+
 		if ($scope.timer < 150)
 		{
 			console.log($scope.timer);
 			timer = $timeout(timerCount, 100);
-			$scope.timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
+			$scope.timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
 		}
 	}
-	
-	
+
+
 
 	var startmatchDataWS = function()
 	{
 		console.log("startmatchDataWS Function initiated for "+$scope.matchDataEntry.selectRegional+"_qm"+$scope.matchDataEntry.matchNumber);
 		closeMatchWS();//
 		if($scope.matchDataEntry.completed==false && $scope.matchDataEntry.selectRegional!='' && $scope.matchDataEntry.matchNumber && $scope.matchDataEntry.ready_to_start)
-		{	
-			$scope.serverTimeWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/time');
-			$scope.serverTimeWS.onopen = function(){
-				// Web Socket is connected, send data using send()
-				console.log("Server Time Web Soccket Connection is open..."); 
-			}
-			$scope.serverTimeWS.onmessage = function (e) { 
-				$scope.$apply(function () {
-					var messageData = JSON.parse(e.data);
-					$scope.serverTime = messageData.server_time;		
-				});
-			};
-			$scope.serverTimeWS.onclose = function() { 
-				// websocket is closed.
-				console.log("Chat Web Soccket Connection is closed..."); 
-			};
-		
-		
+		{
 			console.log("Match Data WS Starting for "+$scope.matchDataEntry.selectRegional+"_qm"+$scope.matchDataEntry.matchNumber);
 			$scope.matchDataWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/match?token='+$auth.getToken()+'&event='+$scope.matchDataEntry.selectRegional+'&match='+$scope.matchDataEntry.matchNumber);
 			var match_key = $scope.matchDataEntry.selectRegional+'_qm'+$scope.matchDataEntry.matchNumber;
 			$scope.matchDataWS.onopen = function() {
 				// Web Socket is connected, send data using send()
-				console.log("Match Web Soccket Connection is open..."); 
+				console.log("Match Web Soccket Connection is open...");
 			}
-			$scope.matchDataWS.onclose = function() { 
+			$scope.matchDataWS.onclose = function() {
 				// websocket is closed.
-				console.log("Match Web Soccket Connection is closed..."); 
+				console.log("Match Web Soccket Connection is closed...");
 			};
-			$scope.matchDataWS.onmessage = function (e) 
-			{ 
+			$scope.matchDataWS.onmessage = function (e)
+			{
 				$scope.$apply(function () {
 					var mdwsData = JSON.parse(e.data);
 					if(mdwsData.type == match_key+'_data')
@@ -265,7 +275,7 @@ angular.module('frcScout')
 								$scope.matchDataEntry.data[MdesData.team_number].crossing_defense[MdesData.attr_1] = [];
 							}
 							if(MdesData.attr_2 == 'start')
-							{							
+							{
 								$scope.matchDataEntry.data[MdesData.team_number].crossing_defense[MdesData.attr_1].push({'start':MdesData.time, 'end':'', 'time':''});
 							}
 							else
@@ -327,14 +337,14 @@ angular.module('frcScout')
 		}
 		$scope.serverTimeWS = undefined;
 	}
-	
-	
-	
+
+
+
 	$scope.stopTimer();
 	startmatchDataWS();
 	setStartTime();
 	//getPointsValues();
-	
+
 	$scope.openScoreModal = function()
 	{
 		var modalInstance = $uibModal.open({
@@ -365,7 +375,7 @@ angular.module('frcScout')
 			}
 		});
 	}
-	
+
 	$scope.close = function () {
 		$uibModalInstance.dismiss('cancel');
 	};

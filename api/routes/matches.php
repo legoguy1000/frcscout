@@ -8,11 +8,11 @@ $app->group('/matches', function () use ($app) {
 				global $db;
 				$authToken = $request->getAttribute("jwt");
 				$match_key = $request->getAttribute("match_key");
-				
+
 				$matchKeyArr = getEventMatchByMatchKey($match_key);
 				$event_key = $matchKeyArr['event_key'];
 				$match_num = $matchKeyArr['match_num'];
-				
+
 				$userId = $authToken->data->id;
 				$teamInfo = getTeamInfoByUser($userId);
 				$team = $teamInfo['team_number'];
@@ -20,7 +20,8 @@ $app->group('/matches', function () use ($app) {
 				$data = getMatchByMatchKey($match_key);
 				$data['last_match'] = isLastMatch($match_num, $event_key);
 				$data['match_data'] = getMatchData($match_key, $team);
-				if(checkMatchKeyFormat($match_key)) {
+				$data['server_time'] = time();
+				if(!checkMatchKeyFormat($match_key)) {
 					$data['msg'] = 'Incorect match key format.  Default values used.';
 					$data['status'] = false;
 					$data['type'] = 'warning';
@@ -30,10 +31,10 @@ $app->group('/matches', function () use ($app) {
 			$app->get('/official', function ($request, $response, $args) {
 				global $db;
 				$authToken = $request->getAttribute("jwt");
-				$match_key = $request->getAttribute("match_key");	
+				$match_key = $request->getAttribute("match_key");
 				$data = array();
 				$data = tbaApiCallMatch($match_key);
-				if(checkMatchKeyFormat($match_key)) {
+				if(!checkMatchKeyFormat($match_key)) {
 					$data['msg'] = 'Incorect match key format.  Default values used.';
 					$data['status'] = false;
 					$data['type'] = 'warning';
@@ -43,14 +44,14 @@ $app->group('/matches', function () use ($app) {
 			$app->get('/stats', function ($request, $response, $args) {
 				global $db;
 				$authToken = $request->getAttribute("jwt");
-				$match_key = $request->getAttribute("match_key");	
-				
+				$match_key = $request->getAttribute("match_key");
+
 				$userId = $authToken->data->id;
 				$teamInfo = getTeamInfoByUser($userId);
 				$team = $teamInfo['team_number'];
 				$data = array();
 				$data = getMatchDataStats($match_key, $team);
-				if(checkMatchKeyFormat($match_key)) {
+				if(!checkMatchKeyFormat($match_key)) {
 					$data['msg'] = 'Incorect match key format.  Default values used.';
 					$data['status'] = false;
 					$data['type'] = 'warning';
@@ -114,7 +115,7 @@ $app->group('/matches', function () use ($app) {
 
 		verifyTeamPrivs($authToken->data->id, 'write', $die = true);
 		$id = uniqid();
-		$query = 'INSERT INTO match_data (`id`, `team_account`, `user_id`, `team_number`, `match_key`, `action`, `attr_1`, `attr_2`, `comment`, `timestamp`) VALUES 
+		$query = 'INSERT INTO match_data (`id`, `team_account`, `user_id`, `team_number`, `match_key`, `action`, `attr_1`, `attr_2`, `comment`, `timestamp`) VALUES
 										("'.$id.'",
 										 "'.$team.'",
 										 "'.$userId.'",
@@ -138,12 +139,68 @@ $app->group('/matches', function () use ($app) {
 			'action' => $formData['data']['action'],
 			'attr_1' => $attr_1,
 			'attr_2' => $attr_2,
-			'comment' => $comment
+			'comment' => $comment,
+			"timestamp" => $timeInsrtstr,
+			"id" => $id
 		);
 		newMessageToWS($dataToWS);
 		$attr1_msg = $attr_1!='' ? $attr_1:'';
 		$attr2_msg = $attr_2!='' ? $attr_2:'';
 		$msg = ucwords(implode(' ',explode('_',$formData['data']['action']))).' '.$attr1_msg.' '.$attr2_msg.' recorded for Team '.$formData['team_number'];
+		return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>$msg));
+
+	});
+	$app->post('/undoMatchData', function ($request, $response, $args) {
+		global $db;
+		$formData = $request->getParsedBody();
+		$authToken = $request->getAttribute("jwt");
+		if(!isset($formData['event']) || $formData['event'] == '') {
+			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Event Key.'));
+		}
+		if(!isset($formData['match_number']) || $formData['match_number'] == '' || $formData['match_number'] < 1) {
+			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Match Number.'));
+		}
+
+		$match_key = $formData['event'].'_qm'.$formData['match_number'];
+		$userId = $authToken->data->id;
+		$teamInfo = getTeamInfoByUser($userId);
+		$team = $teamInfo['team_number'];
+		$time = microtime(true);
+		$start = getMatchData_start($match_key, $team);
+		if($start === false) {
+			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Match has not started yet.'));
+		}
+
+		if(!isset($formData['team_number']) || $formData['team_number'] == '') {
+			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Team Number.'));
+		}
+		if(!isset($formData['data']) || !isset($formData['data']['action']) || $formData['data']['action']=='') {
+			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Data.'));
+		}
+		if(!isset($formData['data']) || !isset($formData['data']['id']) || $formData['data']['id']=='') {
+			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Data.'));
+		}
+
+
+		verifyTeamPrivs($authToken->data->id, 'write', $die = true);
+		$id = uniqid();
+		$query = 'DELETE FROM match_data WHERE team_account="'.$team.'" AND id="'.mysqli_real_escape_string($db, $formData['data']['id']).'"';
+
+		$result = $db->query($query);
+		if(!$result) {
+			return $response->withJson(errorHandle(mysqli_error($db), $query));
+		}
+		$dataToWS = array(
+			'type' => 'match_data_undo',
+			'team' => $team,
+			'team_number' => $formData['team_number'],
+			'match_key' => $match_key,
+			'action' => $formData['data']['action'],
+			'id' => $formData['data']['id'],
+			"id" => $id
+		);
+		newMessageToWS($dataToWS);
+		$msg = ucwords(implode(' ',explode('_',$formData['data']['action']))).' removed for Team '.$formData['team_number'];
 		return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>$msg));
 
 	});
@@ -170,7 +227,7 @@ $app->group('/matches', function () use ($app) {
 		verifyTeamPrivs($authToken->data->id, 'write', $die = true);
 		$id = uniqid();
 		$time = microtime(true);
-		$query = 'INSERT INTO match_data (`id`, `team_account`, `user_id`, `match_key`, `action`, `timestamp`) VALUES 
+		$query = 'INSERT INTO match_data (`id`, `team_account`, `user_id`, `match_key`, `action`, `timestamp`) VALUES
 										("'.$id.'",
 										 "'.$team.'",
 										 "'.$userId.'",

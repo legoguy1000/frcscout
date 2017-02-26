@@ -29,7 +29,7 @@ function errorHandle($error, $query)
 	$mail->addAddress('adr8292@gmail.com', 'Alex resnick');     // Add a recipient
 	$mail->isHTML(true);                                  // Set email format to HTML
 	$mail->Subject = 'FRC Scout | MySQL Error';
-	//$mail->SMTPDebug = 1; 
+	//$mail->SMTPDebug = 1;
 	$mail->IsSMTP();
 	$mail->Mailer = "smtp";
 	$mail->Host = $smtpCreds['host'];
@@ -47,8 +47,8 @@ function errorHandle($error, $query)
 		$email['msg'] = 'Message has been sent';
 		$email['status'] = true;
 	}
-	header("HTTP/1.1 500 Internal Server Error");
-	echo json_encode(array('status'=>false, 'type'=>'danger', 'msg'=>$error, 'query'=>$query, 'email'=>$email, 'error_id'=>$errorId));
+	//header("HTTP/1.1 500 Internal Server Error");
+	//echo json_encode(array('status'=>false, 'type'=>'danger', 'msg'=>$error, 'query'=>$query, 'email'=>$email, 'error_id'=>$errorId));
 	//return array('status'=>false, 'type'=>'danger', 'msg'=>$error, 'query'=>$query, 'email'=>$email);
 }
 
@@ -61,7 +61,7 @@ function webHookEmailNotification($data)
 	$mail->addAddress('adr8292@gmail.com', 'Alex resnick');     // Add a recipient
 	$mail->isHTML(true);                                  // Set email format to HTML
 	$mail->Subject = 'Blue Alliance | '.ucwords(str_replace('_',' ',$data['message_type']));
-	//$mail->SMTPDebug = 1; 
+	//$mail->SMTPDebug = 1;
 	$mail->IsSMTP();
 	$mail->Mailer = "smtp";
 	$mail->Host = $smtpCreds['host'];
@@ -139,7 +139,7 @@ function contactEmail($msgData)
 	$mail->addAddress($$msgData['email'], $msgData['name']);     // Add a recipient
 	$mail->isHTML(true);                                  // Set email format to HTML
 	$mail->Subject = 'FRC Scout Contact';
-	$mail->SMTPDebug = 1; 
+	$mail->SMTPDebug = 1;
 	$mail->IsSMTP();
 	$mail->Mailer = "smtp";
 	$mail->Host = $smtpCreds['host'];
