@@ -95,6 +95,8 @@ angular.module('frcScout')
 				$scope.matchDataEntry.ready_to_start = response.ready_to_start;
 				$scope.serverTime = response.server_time;
 				var timeDiff = $scope.serverTime - (Date.now() / 1000);
+				console.log("timeDiff: "+timeDiff);
+				console.log("Server Time: "+$scope.serverTime);
 				startmatchDataWS();
 				setStartTime();
 			});
