@@ -7,7 +7,7 @@ function getUserDataFromParam($param, $value)
 	$query = 'select users.* from users WHERE users.'.mysqli_real_escape_string($db, $param).'="'.mysqli_real_escape_string($db, $value).'"';
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
 	if($result->num_rows > 0)
-	{		
+	{
 		$row = $result->fetch_assoc();
 		$data = $row;
 		$data['full_name'] = $row['fname'].' '.$row['lname'];
@@ -37,7 +37,7 @@ function checkUserLogin($userData)
 		$id = uniqid();
 		$date = date('Y-n-d');
 		$query = 'insert into users (id, email, fname, lname, creation)
-										values ("'.mysqli_real_escape_string($db, $id).'", 
+										values ("'.mysqli_real_escape_string($db, $id).'",
 												"'.mysqli_real_escape_string($db, $userData['email']).'",
 												"'.mysqli_real_escape_string($db, $userData['fname']).'",
 												"'.mysqli_real_escape_string($db, $userData['lname']).'",
@@ -82,17 +82,17 @@ function verifyTeamPrivs($userId, $requiredPrivs, $die = true)
 	$query = 'SELECT team_memberships.* FROM team_memberships WHERE user_id="'.$userId.'"';
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
 	if($result->num_rows > 0)
-	{		
+	{
 		$row = $result->fetch_assoc();
 		$dbPrivs = $row['privs'];
 	}
-	
+
 	$privsArr = array(
 		'admin'=>array('admin'),
 		'write'=>array('admin','write'),
 		'read'=>array('admin','write','read')
 	);
-	
+
 	if(!in_array($dbPrivs,$privsArr[$requiredPrivs]))
 	{
 		if($die)
@@ -117,7 +117,7 @@ function getTeamMembershipByUser($userId)
 	$query = 'select * from team_memberships WHERE user_id="'.$userId.'"';
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
 	if($result->num_rows > 0)
-	{		
+	{
 		$row = $result->fetch_assoc();
 		$data = $row;
 	}
@@ -129,7 +129,7 @@ function getTeamInfoByUser($userId)
 	global $db;
 	$data = null;
 	$query = 'select team_memberships.*, teams.*, team_accounts.* FROM team_memberships INNER JOIN teams ON team_memberships.team_number=teams.team_number INNER JOIN team_accounts ON team_memberships.team_number=team_accounts.team_number WHERE team_memberships.user_id="'.$userId.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
+	$result = $db->query($query) or errorHandle(mysqli_error($db),$query);
 	if($result->num_rows > 0)
 	{		
 		$row = $result->fetch_assoc();
@@ -155,7 +155,7 @@ function getTeamMembership($team, $options = null)
 			}
 			if(!empty($temp))
 			{
-				$optionsArr[] = '('.implode(' OR ',$temp).')';		
+				$optionsArr[] = '('.implode(' OR ',$temp).')';
 			}
 		}
 		if(isset($options['status']) && !empty($options['status']))
@@ -167,7 +167,7 @@ function getTeamMembership($team, $options = null)
 			}
 			if(!empty($temp))
 			{
-				$optionsArr[] = '('.implode(' OR ',$temp).')';		
+				$optionsArr[] = '('.implode(' OR ',$temp).')';
 			}
 		}
 		if(isset($options['not_user']) && !empty($options['not_user']))
@@ -179,25 +179,25 @@ function getTeamMembership($team, $options = null)
 			}
 			if(!empty($temp))
 			{
-				$optionsArr[] = '('.implode(' AND ',$temp).')';		
+				$optionsArr[] = '('.implode(' AND ',$temp).')';
 			}
 		}
 		if(!empty($optionsArr))
 		{
-			$optionsStr = ' AND '.implode(' AND ',$optionsArr);		
+			$optionsStr = ' AND '.implode(' AND ',$optionsArr);
 		}
 	}
 	$query = 'select team_memberships.*, users.* from team_memberships INNER JOIN users ON team_memberships.user_id=users.id WHERE team_memberships.team_number="'.$team.'"'.$optionsStr;
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db), $query));
 	if($result->num_rows > 0)
-	{		
+	{
 		while($row = $result->fetch_assoc())
 		{
 			$user = $row;
 			$user['full_name'] = $row['fname'].' '.$row['lname'];
 			$data[] = $user;
 		}
-		
+
 	}
 	return $data;
 }
@@ -301,12 +301,12 @@ function checkNotificationPreference($user_id, $type)
 function sendUserNotification($user_id, $type, $msgData)
 {
 	global $db;
-	
+
 	$preferences = checkNotificationPreference($user_id, $type);
-	
+
 	if($preferences['email'] == true)
 	{
-		
+
 	}
 	if($preferences['push'] == true)
 	{
