@@ -40,6 +40,10 @@ angular.module('frcScout')
 		// websocket is closed.
 		console.log("Chat Web Soccket Connection is closed...");
 	};
+	$scope.serverTimeWS.onclose = function() {
+		// websocket is closed.
+		console.log("Chat Web Soccket Connection is closed...");
+	};
 
 	$scope.eventList = eventList;
 	$scope.matchInfo = matchInfo;
@@ -218,7 +222,9 @@ angular.module('frcScout')
 		{
 			console.log($scope.timer);
 			timer = $timeout(timerCount, 100);
-			$scope.timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
+			if($scope.serverTime <= 0) {
+				$scope.timer = $scope.serverTime - $scope.matchDataEntry.match_start_time;
+			}
 		}
 	}
 
