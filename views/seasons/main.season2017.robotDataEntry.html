@@ -39,6 +39,9 @@
 			<label>Utilize Loading Stations: </label>
 			<select class="form-control" ng-model="robotData.loading_station" ng-options="value for value in yesNoOptions">
 			</select>
+			<label>Pick Up From Floor: </label>
+			<select class="form-control" ng-model="robotData.floor_pickup" ng-options="value for value in yesNoOptions">
+			</select>
 			<label>Fuel Capacity: </label>
 			<input class="form-control" ng-model="robotData.fuel_capacity" type="number" min="0" />
 		</div>
