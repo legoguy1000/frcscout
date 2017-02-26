@@ -195,6 +195,7 @@ angular.module('frcScout')
 		if($scope.matchDataEntry.matchStarted == true)
 		{
 			$scope.gameOver = false;
+			$scope.timer = 0;
 			var timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
 			if(timer >= 0) { $scope.timer = timer; }
 			console.log('Start unix: '+$scope.serverTime);
