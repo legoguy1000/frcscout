@@ -19,7 +19,7 @@ function insertMatch($matchData, $multiple = false)
 				$event_key = $match['event_key'];
 				$key = $match['key'];
 				if($match['comp_level'] == 'qm')
-				{				
+				{
 					$query = 'select * from match_info where match_key = "'.$key.'"';
 					$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
 					if($result->num_rows == 0)
@@ -56,15 +56,15 @@ function insertMatchMysqlValue($matchData)
 	$year = getYearByEventKey($matchData['event_key']);
 	$event_code = getEventByEventKey($matchData['event_key']);
 	$key = $matchData['key'];
-	
-	
+
+
 	$red1 = convertBaTeamNumber($matchData['alliances']['red']['teams'][0]);
 	$red2 = convertBaTeamNumber($matchData['alliances']['red']['teams'][1]);
 	$red3 = convertBaTeamNumber($matchData['alliances']['red']['teams'][2]);
 	$blue1 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][0]);
 	$blue2 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][1]);
-	$blue3 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][2]);	
-	
+	$blue3 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][2]);
+
 	$status = checkMatchStatus($matchData['alliances']['red']['score'], $matchData['alliances']['blue']['score']);
 	$string = '("'.uniqid().'","'.$matchData['event_key'].'","'.$matchData['comp_level'].'","'.$matchData['match_number'].'",
 						 "'.$key.'","'.$red1.'","'.$red2.'","'.$red3.'","'.$blue1.'","'.$blue2.'","'.$blue3.'",
@@ -90,11 +90,11 @@ function getEventMatchByMatchKey($match_key)
 	$match_num = (int)trim(filter_var($matchKeyArr[1], FILTER_SANITIZE_NUMBER_INT));
 	$event = getEventByEventKey($event_key);
 	return array(
-		'match_key' => $match_key,		
-		'event_key' => $event_key,		
-		'event' => $event,		
-		'year' => $year,		
-		'match_num' => $match_num,		
+		'match_key' => $match_key,
+		'event_key' => $event_key,
+		'event' => $event,
+		'year' => $year,
+		'match_num' => $match_num,
 	);
 }
 
@@ -136,8 +136,8 @@ function insertNewEvent($eventData)
 {
 	global $db;
 	$official = $eventData['official'] == true ? 1:0;
-	$query = 'INSERT INTO events (id,event_key,year,event_code,name,address,location,start_date,end_date,website,timezone,official) VALUES 
-								 ("'.uniqid().'", "'.mysqli_real_escape_string($db, $eventData['key']).'", "'.mysqli_real_escape_string($db, $eventData['year']).'", "'.mysqli_real_escape_string($db, $eventData['event_code']).'", "'.mysqli_real_escape_string($db, $eventData['name']).'", 
+	$query = 'INSERT INTO events (id,event_key,year,event_code,name,address,location,start_date,end_date,website,timezone,official) VALUES
+								 ("'.uniqid().'", "'.mysqli_real_escape_string($db, $eventData['key']).'", "'.mysqli_real_escape_string($db, $eventData['year']).'", "'.mysqli_real_escape_string($db, $eventData['event_code']).'", "'.mysqli_real_escape_string($db, $eventData['name']).'",
 								  "'.mysqli_real_escape_string($db, $eventData['venue_address']).'", "'.mysqli_real_escape_string($db, $eventData['location']).'", "'.mysqli_real_escape_string($db, $eventData['start_date']).'", "'.mysqli_real_escape_string($db, $eventData['end_date']).'", "'.mysqli_real_escape_string($db, $eventData['website']).'", "'.mysqli_real_escape_string($db, $eventData['timezone']).'", "'.$official.'")';
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
 }
@@ -171,7 +171,7 @@ function updateMatchInfo($matchData)
 	$blue_1 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][0]);
 	$blue_2 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][1]);
 	$blue_3 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][2]);
-	
+
 	$red_score = $matchData['alliances']['red']['score'];
 	$blue_score = $matchData['alliances']['blue']['score'];
 	$status = '';
@@ -179,7 +179,7 @@ function updateMatchInfo($matchData)
 	{
 		$status = ', status="complete"';
 	}
-	
+
 	$query = 'UPDATE match_info SET red_1="'.$red_1.'", red_2="'.$red_2.'", red_3="'.$red_3.'", blue_1="'.$blue_1.'", blue_2="'.$blue_2.'", blue_3="'.$blue_3.'", red_score="'.$red_score.'", blue_score="'.$blue_score.'"'.$status.' WHERE match_key="'.$key.'"';
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
 }
@@ -311,7 +311,7 @@ function matchReadyToStart($matchData)
 {
 	$return = false;
 	if($matchData['blue_1']!='' && $matchData['blue_2']!='' && $matchData['blue_3']!='' && $matchData['red_1']!='' && $matchData['red_2']!='' && $matchData['red_3']!='')
-	{	
+	{
 		$return = true;
 	}
 	return $return;
@@ -376,7 +376,7 @@ function getMatchData_start($match_key, $team)
 {
 	global $db;
 	$data = false;
-	$query = 'select * from match_data WHERE match_key = "'.$match_key.'" AND team_account = "'.$team.'" AND action = "match_start" AND timestamp <= '.microtime(true);
+	$query = 'select * from match_data WHERE match_key = "'.$match_key.'" AND team_account = "'.$team.'" AND action = "match_start" AND timestamp <= '.time();
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
 	if($result->num_rows > 0)
 	{
@@ -403,7 +403,7 @@ function getMatchData($match_key, $team)
 		{
 			$data['match_start'] = $startArr['match_start'];
 			$data['match_started'] = true;
-			
+
 			$query = 'select * from match_data WHERE match_key = "'.$match_key.'" AND team_account = "'.$team.'" AND team_number is not NULL';
 			$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
 			if($result->num_rows > 0)
@@ -444,7 +444,7 @@ function getOneTimeMatchActionByYear($year, $action)
 	}
 	if(in_array($action,$actions))
 	{
-		$return = true;		
+		$return = true;
 	}
 	return $return;
 }
