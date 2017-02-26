@@ -196,9 +196,10 @@ angular.module('frcScout')
 		{
 			$scope.gameOver = false;
 			$scope.timer = 0;
-			var timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
-			if(timer >= 0) { $scope.timer = timer; }
-			console.log('Start unix: '+$scope.serverTime);
+			$scope.timer = ((Date.now() / 1000) + timeDiff) - $scope.matchDataEntry.match_start_time;
+			//if(timer >= 0) { $scope.timer = timer; }
+			var curTime = (Date.now() / 1000) + timeDiff;
+			console.log('Start unix + TimeDiff: '+curTime);
 			console.log('SFASD: '+$scope.matchDataEntry.match_start_time);
 			console.log($scope.timer);
 			timerCount();

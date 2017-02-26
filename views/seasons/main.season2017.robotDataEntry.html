@@ -1,6 +1,6 @@
 <div ng-controller="main.season2017.robotDataEntry-ctrl">
 	<div class="" ng-include="'views/includes/robotEntryTop.html'"></div>
-	<div class="row"  ng-hide="robotDataEntry.selectTeam==null || robotDataEntry.selectTeam==undefined">
+	<div class="row" ng-hide="robotDataEntry.selectTeam==null || robotDataEntry.selectTeam==undefined">
 		<div class="col-lg-4">
 			<h4>Shooting:</h4>
 			<label>High Goal: </label>
@@ -18,7 +18,7 @@
 			<div style="width:100%;">
 				<div uib-collapse="robotData.drive_train!='Other'">
 					<label>Other: </label>
-					<input class="form-control" ng-model="robotData.drive_train_other" ng-disabled="robotData.drive_train!='Other'"/>
+					<input class="form-control" ng-model="robotData.drive_train_other" ng-disabled="robotData.drive_train!='Other'" />
 				</div>
 			</div>
 		</div>
@@ -39,9 +39,12 @@
 			<label>Utilize Loading Stations: </label>
 			<select class="form-control" ng-model="robotData.loading_station" ng-options="value for value in yesNoOptions">
 			</select>
+			<label>Pick Up From Floor: </label>
+			<select class="form-control" ng-model="robotData.floor_pickup" ng-options="value for value in yesNoOptions">
+			</select>
 			<label>Fuel Capacity: </label>
-			<input class="form-control" ng-model="robotData.fuel_capacity" type="number" min="0"/>
+			<input class="form-control" ng-model="robotData.fuel_capacity" type="number" min="0" />
 		</div>
-		
+
 	</div>
 </div>

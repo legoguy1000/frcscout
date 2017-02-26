@@ -81,7 +81,7 @@ function getMatchDataStats($match_key, $teamAccount)
 	$matchKeyArr = getEventMatchByMatchKey($match_key);
 	$event_key = $matchKeyArr['event_key'];
 	$year = $matchKeyArr['year'];
-	
+
 	$initData = getMatchStatsCategoriesByYear($year);
 	$data = array(
 		'blue_1' => $initData,
@@ -109,9 +109,9 @@ function getMatchDataStats($match_key, $teamAccount)
 				$action = $row['action'];
 				$timestamp = $row['timestamp'];
 				$alli = $alliances[$team_number];
-				
+
 				$duringAuto = $timestamp-$matchStart <= 15;
-				
+
 				if($action == 'high_goal' && $duringAuto)
 				{
 					$data[$alli]['auto_high_goal_count'] += 1;
@@ -150,7 +150,7 @@ function getMatchDataStats($match_key, $teamAccount)
 				{
 					$data[$alli]['auto_reach_defense_points'] += $pointValues['auto_reach_defense'];
 					$data[$alli]['auto_points'] += $pointValues['auto_reach_defense'];
-				}		
+				}
 				elseif($action == 'foul')
 				{
 					$data[$alli]['foul_count'] += 1;
@@ -173,9 +173,9 @@ function getMatchDataStats($match_key, $teamAccount)
 				$action = $row['action'];
 				$timestamp = $row['timestamp'];
 				$alli = $alliances[$team_number];
-				
+
 				$duringAuto = $timestamp-$matchStart <= 15;
-				
+
 				if($action == 'high_goal' && $duringAuto)
 				{
 					$data[$alli]['auto_high_goal_count'] += 1;
@@ -209,7 +209,7 @@ function getMatchDataStats($match_key, $teamAccount)
 				{
 					$data[$alli]['auto_cross_baseline_points'] += $pointValues['cross_baseline'];
 					$data[$alli]['auto_points'] += $pointValues['cross_baseline'];
-				}		
+				}
 				elseif($action == 'foul')
 				{
 					$data[$alli]['foul_count'] += 1;
@@ -230,7 +230,7 @@ function getMatchDataStats($match_key, $teamAccount)
 		'matchInfo' => $match_info,
 		'official_data' => tbaApiCallMatch($match_key)
 	);
-	
+
 	return $allData;
 }
 
@@ -266,6 +266,7 @@ function getRobotOptionsByYear($year)
 			'climb_rope' =>  '',
 			'fuel_hopper' =>  '',
 			'loading_station' =>  '',
+			'floor_pickup' =>  '',
 			'fuel_capacity' =>  ''
 		);
 	}

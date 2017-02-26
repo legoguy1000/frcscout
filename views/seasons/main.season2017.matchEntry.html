@@ -56,9 +56,19 @@
 			</div>
 		</div>
 		<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
-			<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('deliver_gear','','','')">
-				<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].deliver_gear.length}}</span>
-				Deliver Gear
+				<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('deliver_gear','front','','')">
+					<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].deliver_gear.length}}</span>
+					Deliver Gear - Front
+				</button>
+				<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('deliver_gear','side','','')">
+					<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].deliver_gear.length}}</span>
+					Deliver Gear - Side
+				</button>
+		</div>
+		<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
+			<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('trigger_hopper','','','')">
+				<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].trigger_hopper.length}}</span>
+				<span>Trigger Hopper</span>
 			</button>
 		</div>
 		<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
@@ -66,30 +76,22 @@
 				<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].cross_baseline.length}}</span>
 				<span>Cross Baseline (+5 points)</span>
 			</button>
-		</div>
-		<!-- <div class="col-xs-6 col-sm-4" style="margin-bottom: 10px;">
-			<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false || gameMode != 'Autonomous' || matchDataEntry.data[matchDataEntry.team_number].rotor_turning.length==1" ng-click="insertMatchData('rotor_turning','','','')">
-				<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].rotor_turning.length}}</span>
-				Rotor Turning
-			</button>
-		</div> -->
-		<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
 			<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false || gameMode != 'Teleoperated' || matchDataEntry.data[matchDataEntry.team_number].ready_takeoff.length==1" ng-click="insertMatchData('ready_takeoff','','','')">
 				<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].ready_takeoff.length}}</span>
 				<span>Ready for Takeoff (+50 points)</span>
-			</button>		
+			</button>
 		</div>
 		<div class="col-xs-6 col-sm-3" style="margin-bottom: 10px;">
 			<button class="btn btn-default btn-block" ng-disabled="matchDataEntry.matchStarted==false" ng-click="insertMatchData('ready_takeoff','','','')">
 				<span class="pull-right badge">{{matchDataEntry.data[matchDataEntry.team_number].dead_robot.length}}</span>
-				Dead Robot 
-			</button>		
+				Dead Robot
+			</button>
 		</div>
 		<div class="clearfix"></div>
-		
+
 	</div>
 	<div class="row" ng-hide="matchInfo.ready_to_start==false">
-		
+
 	</div>
 </div>
 <!-- <div>
