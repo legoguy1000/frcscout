@@ -376,7 +376,7 @@ function getMatchData_start($match_key, $team)
 {
 	global $db;
 	$data = false;
-	$query = 'select * from match_data WHERE match_key = "'.$match_key.'" AND team_account = "'.$team.'" AND action = "match_start" AND timestamp <= '.time();
+	$query = 'select * from match_data WHERE match_key = "'.$match_key.'" AND team_account = "'.$team.'" AND action = "match_start"';
 	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
 	if($result->num_rows > 0)
 	{
