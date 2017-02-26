@@ -216,6 +216,12 @@ angular.module('frcScout')
 				return response.data;
 			});
 		},
+		undoMatchData: function (formData) {
+			return $http.post('api/v1/matches/undoMatchData',formData)
+			.then(function(response) {
+				return response.data;
+			});
+		},
 		startMatch: function (formData) {
 			return $http.post('api/v1/matches/startMatch',formData)
 			.then(function(response) {
