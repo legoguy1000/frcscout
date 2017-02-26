@@ -26,6 +26,7 @@ angular.module('frcScout')
 	};
 	$scope.serverTime = matchInit.server_time;
 	var timeDiff = $scope.serverTime - (Date.now() / 1000);
+	console.log("timeDiff: "+timeDiff);
 	/*$scope.serverTimeWS = new WebSocket('wss://ws.frcscout.resnick-tech.com:443/ws/time');
 	$scope.serverTimeWS.onopen = function(){
 		// Web Socket is connected, send data using send()
