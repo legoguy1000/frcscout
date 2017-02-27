@@ -4,7 +4,7 @@ use \Firebase\JWT\JWT;
 $app->group('/general', function () use ($app) {
 	$app->group('/seasonInfo', function () use ($app) {
 		$app->get('/all', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$data = array(
 				'current' => array(),
 				'previous' => array(),
@@ -13,10 +13,10 @@ $app->group('/general', function () use ($app) {
 			);
 			$currentYear = date('Y');
 			$query = 'select * from seasons ORDER BY year DESC';
-			$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-			if($result->num_rows > 0)
+			$seasons = db_select($query);
+			if(count($seasons) > 0)
 			{
-				while($row = $result->fetch_assoc())
+				foreach($seasons as $row)
 				{
 					if($row['year'] == $currentYear)
 					{
@@ -36,17 +36,13 @@ $app->group('/general', function () use ($app) {
 			return $response->withJson($data);
 		});
 		$app->get('/{year:[0-9]{4}}', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$year = $request->getAttribute('year');
 			$data = array();
 			$year = isset($year) ? $year : date('Y');
 			$query = 'select * from seasons WHERE year = "'.$year.'"';
-			$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-			if($result->num_rows > 0)
-			{
-				$row = $result->fetch_assoc();
-				$data = $row;
-			}
+			$seasons = db_select($query);
+			$data = $seasons;
 			return $response->withJson($data);
 		});
 	});
