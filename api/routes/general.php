@@ -67,7 +67,7 @@ $app->group('/general', function () use ($app) {
 		$data['events'] = $events['event_count'];
 
 		$query = 'SELECT COUNT(DISTINCT(match_key)) as match_count from match_data';
-		$matches = db_select($query);
+		$matches = db_select_single($query);
 		$data['matches'] = $matches['match_count'];
 
 		return $response->withJson($data);
