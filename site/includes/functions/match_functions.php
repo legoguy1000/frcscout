@@ -203,7 +203,7 @@ function updateMatchInfo($matchData)
 																	blue_3='.$blue_3.',
 																	red_score='.$red_score.',
 																	blue_score='.$blue_score.''.$status.'
-						WHERE match_key='.$key
+						WHERE match_key='.$key;
 	$result = db_query($query);
 }
 
