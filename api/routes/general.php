@@ -40,8 +40,8 @@ $app->group('/general', function () use ($app) {
 			$year = $request->getAttribute('year');
 			$data = array();
 			$year = isset($year) ? $year : date('Y');
-			$query = 'select * from seasons WHERE year = "'.$year.'"';
-			$seasons = db_select($query);
+			$query = 'select * from seasons WHERE year = "'.$year.'" LIMIT 1';
+			$seasons = db_select_single($query);
 			$data = $seasons;
 			return $response->withJson($data);
 		});
@@ -54,21 +54,21 @@ $app->group('/general', function () use ($app) {
 			'events' => 0,
 			'matches' => 0
 		);
-		$query = 'select * from users';
-		$users = db_select($query);
-		$data['users'] = count($users);
+		$query = 'SELECT COUNT(DISTINCT(id)) as user_count from users';
+		$users = db_select_single($query);
+		$data['users'] = $users['user_count'];
 
-		$query = 'select * from team_accounts';
-		$teams = db_select($query);
-		$data['teams'] = count($teams);
+		$query = 'SELECT COUNT(DISTINCT(team_number)) as team_count from team_accounts';
+		$teams = db_select_single($query);
+		$data['teams'] = $teams['team_count'];
 
-		$query = 'SELECT DISTINCT match_info.event_key FROM `match_data` JOIN match_info ON match_info.match_key=match_data.match_key';
-		$events = db_select($query);
-		$data['events'] = count($events);
+		$query = 'SELECT COUNT(DISTINCT(match_info.event_key)) as event_count FROM `match_data` JOIN match_info ON match_info.match_key=match_data.match_key';
+		$events = db_select_single($query);
+		$data['events'] = $events['event_count'];
 
-		$query = 'select DISTINCT match_key from match_data';
+		$query = 'SELECT COUNT(DISTINCT(match_key)) as match_count from match_data';
 		$matches = db_select($query);
-		$data['matches'] = count($matches);
+		$data['matches'] = $matches['match_count'];
 
 		return $response->withJson($data);
 	});

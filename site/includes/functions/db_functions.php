@@ -53,6 +53,19 @@ function db_select($query) {
     return $rows;
 }
 
+function db_select_single($query) {
+    $rows = array();
+    $result = db_query($query);
+
+    // If query failed, return `false`
+    if($result === false) {
+        return false;
+    }
+
+    $row = $result->fetch_assoc();
+    return $row;
+}
+
 function db_quote($value) {
     $db = db_connect();
     return '"'.mysqli_real_escape_string($db,$value).'"';

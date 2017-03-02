@@ -17,7 +17,7 @@ $app->group('/users', function () use ($app) {
 		});
 		$app->group('/team', function () use ($app) {
 			$app->get('/membership', function ($request, $response, $args) {
-				global $db;
+				$db = db_connect();
 				$authToken = $request->getAttribute("jwt");
 				$id = $request->getAttribute('id');
 				if(!isset($id) || $id == '') {
@@ -27,7 +27,7 @@ $app->group('/users', function () use ($app) {
 				return $response->withJson($user);
 			});
 			$app->get('/info', function ($request, $response, $args) {
-				global $db;
+				$db = db_connect();
 				$authToken = $request->getAttribute("jwt");
 				$id = $request->getAttribute('id');
 				if(!isset($id) || $id == '') {
@@ -39,7 +39,7 @@ $app->group('/users', function () use ($app) {
 		});
 	});
 	$app->post('/updatePersonalInfo', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$formData = $request->getParsedBody();
 		$authToken = $request->getAttribute("jwt");
 		if(!isset($formData['id']) || $formData['id'] == '')
@@ -51,9 +51,9 @@ $app->group('/users', function () use ($app) {
 		{
 			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'All Fields are Required'));
 		}
-		$phone = $formData['data']['phone']== null ? 'NULL' : '"'.mysqli_real_escape_string($db, $formData['data']['phone']).'"';
-		$query = 'UPDATE users SET fname="'.mysqli_real_escape_string($db, $formData['data']['fname']).'", lname="'.mysqli_real_escape_string($db, $formData['data']['lname']).'", phone='.$phone.' WHERE id="'.mysqli_real_escape_string($db, $formData['id']).'"';
-		$result = $db->query($query);
+		$phone = $formData['data']['phone']== null ? 'NULL' : ''.db_quote($formData['data']['phone']);
+		$query = 'UPDATE users SET fname='.db_quote($formData['data']['fname']).', lname='.db_quote($formData['data']['lname']).', phone='.$phone.' WHERE id='.db_quote($formData['id']);
+		$result = db_query($query);
 		if(!$result) {
 			return $response->withJson(errorHandle(mysqli_error($db), $query));
 		}
@@ -75,7 +75,7 @@ $app->group('/users', function () use ($app) {
 	});
 	$app->group('/pushNotification', function () use ($app) {
 		$app->post('/subscribe', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$authToken = $request->getAttribute("jwt");
 			$formData = $request->getParsedBody();
 			if(!isset($formData['endpoint']) || $formData['endpoint'] == '' || !isset($formData['key']) || $formData['key'] == '' || !isset($formData['authSecret']) || $formData['authSecret'] == '') {
@@ -86,13 +86,13 @@ $app->group('/users', function () use ($app) {
 			$team = $teamInfo['team_number'];
 
 			$id = uniqid();
-			$query = 'INSERT INTO notification_endpoints (`id`, `user_id`, `endpoint`, `auth_secret`, `public_key`) VALUES 
-											("'.$id.'",
-											 "'.$userId.'",
-											 "'.mysqli_real_escape_string($db, $formData['endpoint']).'",
-											 "'.mysqli_real_escape_string($db, $formData['authSecret']).'",
-											 "'.mysqli_real_escape_string($db, $formData['key']).'")';
-			$result = $db->query($query);
+			$query = 'INSERT INTO notification_endpoints (`id`, `user_id`, `endpoint`, `auth_secret`, `public_key`) VALUES
+											('.db_quote($id).',
+											 '.db_quote($userId).',
+											 '.db_quote($formData['endpoint']).',
+											 '.db_quote($formData['authSecret']).',
+											 '.db_quote($formData['key']).')';
+			$result = db_query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}
@@ -100,15 +100,15 @@ $app->group('/users', function () use ($app) {
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>$msg));
 		});
 		$app->post('/unsubscribe', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$authToken = $request->getAttribute("jwt");
 			$formData = $request->getParsedBody();
-			if(!isset($formData['endpoint']) || $formData['endpoint'] == '') {				
+			if(!isset($formData['endpoint']) || $formData['endpoint'] == '') {
 				return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Request.'));
 			}
 			$userId = $authToken->data->id;
-			$query = 'DELETE FROM notification_endpoints WHERE endpoint="'.$formData['endpoint'].'" AND user_id="'.$userId.'"';
-			$result = $db->query($query);
+			$query = 'DELETE FROM notification_endpoints WHERE endpoint='.db_quote($formData['endpoint']).' AND user_id='.db_quote($userId);
+			$result = db_query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}
@@ -116,15 +116,15 @@ $app->group('/users', function () use ($app) {
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>$msg));
 		});
 		$app->post('/endpointUpdate', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$authToken = $request->getAttribute("jwt");
 			$formData = $request->getParsedBody();
-			if(!isset($formData['endpoint']) || $formData['endpoint'] == '') {				
+			if(!isset($formData['endpoint']) || $formData['endpoint'] == '') {
 				return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Request.'));
 			}
 			$userId = $authToken->data->id;
-			$query = 'select * from notification_endpoints WHERE endpoint="'.mysqli_real_escape_string($db, $formData['endpoint']).'"';
-			$result = $db->query($query);
+			$query = 'select * from notification_endpoints WHERE endpoint='.db_quote($formData['endpoint']);
+			$result = db_query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}
@@ -133,8 +133,8 @@ $app->group('/users', function () use ($app) {
 				$row = $result->fetch_assoc();
 				if($userId != $row['user_id'])
 				{
-					$query = 'UPDATE notification_endpoints SET user_id="'.$userId.'", auth_secret="'.mysqli_real_escape_string($db, $formData['authSecret']).'", public_key="'.mysqli_real_escape_string($db, $formData['key']).'" WHERE endpoint="'.mysqli_real_escape_string($db, $formData['endpoint']).'"';
-					$result = $db->query($query);
+					$query = 'UPDATE notification_endpoints SET user_id='.db_quote($userId).', auth_secret='.db_quote($formData['authSecret']).', public_key='.db_quote($formData['key']).' WHERE endpoint='.db_quote($formData['endpoint']);
+					$result = db_query($query);
 					if(!$result) {
 						return $response->withJson(errorHandle(mysqli_error($db), $query));
 					}
@@ -143,13 +143,13 @@ $app->group('/users', function () use ($app) {
 			else
 			{
 				$id = uniqid();
-				$query = 'INSERT INTO notification_endpoints (`id`, `user_id`, `endpoint`, `auth_secret`, `public_key`) VALUES 
-												("'.$id.'",
-												 "'.$userId.'",
-												 "'.mysqli_real_escape_string($db, $formData['endpoint']).'",
-												 "'.mysqli_real_escape_string($db, $formData['authSecret']).'",
-												 "'.mysqli_real_escape_string($db, $formData['key']).'")';
-				$result = $db->query($query);
+				$query = 'INSERT INTO notification_endpoints (`id`, `user_id`, `endpoint`, `auth_secret`, `public_key`) VALUES
+												('.db_quote($id).',
+												 '.db_quote($userId).',
+												 '.db_quote($formData['endpoint']).',
+												 '.db_quote($formData['authSecret']).',
+												 '.db_quote($formData['key']).')';
+				$result = db_query($query);
 				if(!$result) {
 					return $response->withJson(errorHandle(mysqli_error($db), $query));
 				}
