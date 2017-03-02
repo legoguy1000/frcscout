@@ -119,10 +119,10 @@ $app->group('/events', function () use ($app) {
 			$all = array();
 			foreach($events as $event)
 			{
-				$event_week = date('W',strtotime($row['start_date']));
+				$event_week = date('W',strtotime($event['start_date']));
 				$temp = $event;
 
-				if($row['event_key'] == $current_event)
+				if($event['event_key'] == $current_event)
 				{
 					$temp['status'] = 'Team Active';
 					$data['team_active'] = $temp;

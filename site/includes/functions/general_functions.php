@@ -169,14 +169,14 @@ function getCurrentEvents()
 	$all = array();
 	foreach($events as $event)
 	{
-		$event_week = date('W',strtotime($row['start_date']));
+		$event_week = date('W',strtotime($event['start_date']));
 		$temp = $event;
 		if($currentWeek == $event_week)
 		{
 			$temp['start_date_unix'] = strtotime($event['start_date']);
 			$temp['end_date_unix'] = strtotime($event['end_date']);
 			$temp['team_active'] = false;
-			if($row['event_key'] == $current_event)
+			if($event['event_key'] == $current_event)
 			{
 				$temp['team_active'] = true;
 			}
