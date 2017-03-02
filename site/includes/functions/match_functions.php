@@ -142,7 +142,7 @@ function insertNewEvent($eventData)
 	$db = db_connect();
 	$official = $eventData['official'] == true ? 1:0;
 	$query = 'INSERT INTO events (id,event_key,year,event_code,name,address,location,start_date,end_date,website,timezone,official) VALUES
-								 ('.db_quote(uniqid().',
+								 ('.db_quote(uniqid()).',
 								 	'.db_quote($eventData['key']).',
 									'.db_quote($eventData['year']).',
 									'.db_quote($eventData['event_code']).',
