@@ -161,8 +161,8 @@ function insertNewEventFromBA($event_key)
 {
 	$db = db_connect();
 	$query = 'select * from events where event_key = "'.$event_key.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows == 0)
+	$event = db_select($query);
+	if(!is_null($event))
 	{
 		$baApiCall = tbaApiCallEvent($event_key);
 		if($baApiCall !== FALSE)
@@ -179,24 +179,32 @@ function insertNewEventFromBA($event_key)
 function updateMatchInfo($matchData)
 {
 	$db = db_connect();
-	$key = $matchData['key'];
-	$red_1 = convertBaTeamNumber($matchData['alliances']['red']['teams'][0]);
-	$red_2 = convertBaTeamNumber($matchData['alliances']['red']['teams'][1]);
-	$red_3 = convertBaTeamNumber($matchData['alliances']['red']['teams'][2]);
-	$blue_1 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][0]);
-	$blue_2 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][1]);
-	$blue_3 = convertBaTeamNumber($matchData['alliances']['blue']['teams'][2]);
+	$key = db_quote($matchData['key']);
+	$red_1 = db_quote(convertBaTeamNumber($matchData['alliances']['red']['teams'][0]));
+	$red_2 = db_quote(convertBaTeamNumber($matchData['alliances']['red']['teams'][1]));
+	$red_3 = db_quote(convertBaTeamNumber($matchData['alliances']['red']['teams'][2]));
+	$blue_1 = db_quote(convertBaTeamNumber($matchData['alliances']['blue']['teams'][0]));
+	$blue_2 = db_quote(convertBaTeamNumber($matchData['alliances']['blue']['teams'][1]));
+	$blue_3 = db_quote(convertBaTeamNumber($matchData['alliances']['blue']['teams'][2]));
 
-	$red_score = $matchData['alliances']['red']['score'];
-	$blue_score = $matchData['alliances']['blue']['score'];
+	$red_score = db_quote($matchData['alliances']['red']['score']);
+	$blue_score = db_quote($matchData['alliances']['blue']['score']);
 	$status = '';
 	if(checkMatchStatus($red_score, $blue_score) == 'complete')
 	{
 		$status = ', status="complete"';
 	}
 
-	$query = 'UPDATE match_info SET red_1="'.$red_1.'", red_2="'.$red_2.'", red_3="'.$red_3.'", blue_1="'.$blue_1.'", blue_2="'.$blue_2.'", blue_3="'.$blue_3.'", red_score="'.$red_score.'", blue_score="'.$blue_score.'"'.$status.' WHERE match_key="'.$key.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
+	$query = 'UPDATE match_info SET red_1='.$red_1.',
+																	red_2='.$red_2.',
+																	red_3='.$red_3.',
+																	blue_1='.$blue_1.',
+																	blue_2='.$blue_2.',
+																	blue_3='.$blue_3.',
+																	red_score='.$red_score.',
+																	blue_score='.$blue_score.''.$status.'
+						WHERE match_key='.$key
+	$result = db_query($query);
 }
 
 function setUpcomingMatch($matchData)
@@ -204,7 +212,7 @@ function setUpcomingMatch($matchData)
 	$db = db_connect();
 	$key = $matchData['match_key'];
 	$query = 'UPDATE match_info SET status="upcoming" WHERE match_key="'.$key.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
+	$result = db_query($query);
 }
 
 function convertBaTeamNumber($team)

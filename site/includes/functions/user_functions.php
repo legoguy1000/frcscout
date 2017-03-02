@@ -2,20 +2,18 @@
 
 function getUserDataFromParam($param, $value)
 {
-	global $db;
+	$db = db_connect();
 	$data = array();
-	$query = 'select users.* from users WHERE users.'.mysqli_real_escape_string($db, $param).'="'.mysqli_real_escape_string($db, $value).'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	if($result->num_rows > 0)
+	$query = 'select users.* from users WHERE users.'.mysqli_real_escape_string($db, $param).'='.db_quote($value);
+	$user = db_select_single($query);
+	if(!is_null($user))
 	{
-		$row = $result->fetch_assoc();
-		$data = $row;
+		$data = $user;
 		$data['full_name'] = $row['fname'].' '.$row['lname'];
 		//$data['team_info'] = getTeamMembershipByUser($row['id']);
-		$query2 = 'select notification_preferences.* from notification_preferences WHERE notification_preferences.user_id="'.mysqli_real_escape_string($db, $row['id']).'"';
-		$result2 = $db->query($query2) or die(errorHandle(mysqli_error($db),$query));
-		$row2 = $result2->fetch_assoc();
-		$data['notification_preferences'] = convertNotificationPreferencesToBool($row2);
+		$query2 = 'select notification_preferences.* from notification_preferences WHERE notification_preferences.user_id='.db_quote($row['id']);
+		$prefs = db_select_single($query);
+		$data['notification_preferences'] = convertNotificationPreferencesToBool($prefs);
 	}
 	else
 	{
@@ -112,28 +110,20 @@ function verifyTeamPrivs($userId, $requiredPrivs, $die = true)
 
 function getTeamMembershipByUser($userId)
 {
-	global $db;
-	$data = null;
+	$db = db_connect();
 	$query = 'select * from team_memberships WHERE user_id="'.$userId.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	if($result->num_rows > 0)
-	{
-		$row = $result->fetch_assoc();
-		$data = $row;
-	}
-	return $data;
+	$info = db_select_single($query);
+	return $info;
 }
 
 function getTeamInfoByUser($userId)
 {
-	global $db;
+	$db = db_connect();
 	$data = null;
 	$query = 'select team_memberships.*, teams.*, team_accounts.* FROM team_memberships INNER JOIN teams ON team_memberships.team_number=teams.team_number INNER JOIN team_accounts ON team_memberships.team_number=team_accounts.team_number WHERE team_memberships.user_id="'.$userId.'"';
-	$result = $db->query($query) or errorHandle(mysqli_error($db),$query);
-	if($result->num_rows > 0)
-	{		
-		$row = $result->fetch_assoc();
-		$data = $row;
+	$info = db_select_single($query);
+	if($info) {
+		$data = $info;
 	}
 	return $data;
 }
@@ -188,16 +178,12 @@ function getTeamMembership($team, $options = null)
 		}
 	}
 	$query = 'select team_memberships.*, users.* from team_memberships INNER JOIN users ON team_memberships.user_id=users.id WHERE team_memberships.team_number="'.$team.'"'.$optionsStr;
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db), $query));
-	if($result->num_rows > 0)
+	$members = db_select($query);
+	foreach($members as $member)
 	{
-		while($row = $result->fetch_assoc())
-		{
-			$user = $row;
-			$user['full_name'] = $row['fname'].' '.$row['lname'];
+			$user = $member;
+			$user['full_name'] = $member['fname'].' '.$member['lname'];
 			$data[] = $user;
-		}
-
 	}
 	return $data;
 }
@@ -223,7 +209,7 @@ function getGcmKey()
 use Minishlink\WebPush\WebPush;
 function sendPushNotificationByUser($user, $title='', $body='', $tag='')
 {
-	global $db;
+	$db = db_connect();
 
 	$ti = '';
 	$tagInit = uniqid();
@@ -240,30 +226,27 @@ function sendPushNotificationByUser($user, $title='', $body='', $tag='')
 	);
 	$webPush = new WebPush($apiKeys);
 	$query = 'select * from notification_endpoints where user_id="'.$user.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$endpoints = db_select($query);
+	$payload = array(
+		'title'=>'FRC Scout'.$ti,
+		'body'=>$body,
+		'tag'=>$tagInit,
+	);
+	foreach($endpoints as $ep)
 	{
-		$payload = array(
-			'title'=>'FRC Scout'.$ti,
-			'body'=>$body,
-			'tag'=>$tagInit,
+		$notification = array(
+			'endpoint' => $ep['endpoint'],
+			'userPublicKey' => $ep['public_key'],
+			'userAuthToken' => $ep['auth_secret'],
+			'payload' => json_encode($payload)
 		);
-		while($row = $result->fetch_assoc())
-		{
-			$notification = array(
-				'endpoint' => $row['endpoint'],
-				'userPublicKey' => $row['public_key'],
-				'userAuthToken' => $row['auth_secret'],
-				'payload' => json_encode($payload)
-			);
-			$webPush->sendNotification(
-				$notification['endpoint'],
-				$notification['payload'], // optional (defaults null)
-				$notification['userPublicKey'], // optional (defaults null)
-				$notification['userAuthToken'], // optional (defaults null)
-				true
-			);
-		}
+		$webPush->sendNotification(
+			$notification['endpoint'],
+			$notification['payload'], // optional (defaults null)
+			$notification['userPublicKey'], // optional (defaults null)
+			$notification['userAuthToken'], // optional (defaults null)
+			true
+		);
 	}
 }
 

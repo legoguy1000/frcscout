@@ -117,8 +117,8 @@ $app->group('/matches', function () use ($app) {
 		$id = uniqid();
 		$query = 'INSERT INTO match_data (`id`, `team_account`, `user_id`, `team_number`, `match_key`, `action`, `attr_1`, `attr_2`, `comment`, `timestamp`) VALUES
 										('.db_quote($id).',
-										('.db_quote($team).',
-										('.db_quote($userId).',
+										 '.db_quote($team).',
+										 '.db_quote($userId).',
 										 '.db_quote($formData['team_number']).',
 										 '.db_quote($match_key).',
 										 '.db_quote($formData['data']['action']).',
