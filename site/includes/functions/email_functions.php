@@ -15,7 +15,7 @@ function smtpCredentials()
 
 function errorHandle($error, $query)
 {
-	global $db;
+	$db = db_connect();
 	$userId = '';
 	$token = checkToken($die=false,$die401=false);
 	if($token != false)

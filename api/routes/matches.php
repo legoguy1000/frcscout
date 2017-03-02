@@ -5,7 +5,7 @@ $app->group('/matches', function () use ($app) {
 	$app->group('/matchData', function () use ($app) {
 		$app->group('/{match_key}', function () use ($app) {
 			$app->get('', function ($request, $response, $args) {
-				global $db;
+				$db = db_connect();
 				$authToken = $request->getAttribute("jwt");
 				$match_key = $request->getAttribute("match_key");
 
@@ -29,7 +29,7 @@ $app->group('/matches', function () use ($app) {
 				return $response->withJson($data, null, JSON_NUMERIC_CHECK);
 			});
 			$app->get('/official', function ($request, $response, $args) {
-				global $db;
+				$db = db_connect();
 				$authToken = $request->getAttribute("jwt");
 				$match_key = $request->getAttribute("match_key");
 				$data = array();
@@ -42,7 +42,7 @@ $app->group('/matches', function () use ($app) {
 				return $response->withJson($data, null, JSON_NUMERIC_CHECK);
 			});
 			$app->get('/stats', function ($request, $response, $args) {
-				global $db;
+				$db = db_connect();
 				$authToken = $request->getAttribute("jwt");
 				$match_key = $request->getAttribute("match_key");
 
@@ -61,7 +61,7 @@ $app->group('/matches', function () use ($app) {
 		});
 	});
 	$app->get('/pointsByYear[/{year:[0-9]{4}}]', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		//$authToken = $request->getAttribute("jwt");
 		$year = date('Y');
 		if($request->getAttribute("year") != null && $request->getAttribute("year")!='' && $request->getAttribute("year")!='undefined') {
@@ -71,7 +71,7 @@ $app->group('/matches', function () use ($app) {
 		return $response->withJson($pointValues, null, JSON_NUMERIC_CHECK);
 	});
 	$app->post('/insertMatchData', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$formData = $request->getParsedBody();
 		$authToken = $request->getAttribute("jwt");
 		if(!isset($formData['event']) || $formData['event'] == '') {
@@ -91,13 +91,13 @@ $app->group('/matches', function () use ($app) {
 			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Match has not started yet.'));
 		}
 		elseif($time - $start['match_start'] > 150 && $time - $start['match_start'] <155) {
-			$timeInsrtstr = '"'.round($start['match_start']+150,4).'"';
+			$timeInsrtstr = db_quote(round($start['match_start']+150,4));
 		}
 		elseif($time - $start['match_start'] >= 155) {
 			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Match is over.'));
 		}
 		else {
-			$timeInsrtstr = '"'.round($time,4).'"';
+			$timeInsrtstr = db_quote(round($time,4));
 		}
 
 		if(!isset($formData['team_number']) || $formData['team_number'] == '') {
@@ -116,18 +116,18 @@ $app->group('/matches', function () use ($app) {
 		verifyTeamPrivs($authToken->data->id, 'write', $die = true);
 		$id = uniqid();
 		$query = 'INSERT INTO match_data (`id`, `team_account`, `user_id`, `team_number`, `match_key`, `action`, `attr_1`, `attr_2`, `comment`, `timestamp`) VALUES
-										("'.$id.'",
-										 "'.$team.'",
-										 "'.$userId.'",
-										 "'.mysqli_real_escape_string($db, $formData['team_number']).'",
-										 "'.mysqli_real_escape_string($db, $match_key).'",
-										 "'.mysqli_real_escape_string($db, $formData['data']['action']).'",
-										 "'.mysqli_real_escape_string($db, $attr_1).'",
-										 "'.mysqli_real_escape_string($db, $attr_2).'",
-										 "'.mysqli_real_escape_string($db, $comment).'",
-										 '.$timeInsrtstr.')';
+										('.db_quote($id).',
+										('.db_quote($team).',
+										('.db_quote($userId).',
+										 '.db_quote($formData['team_number']).',
+										 '.db_quote($match_key).',
+										 '.db_quote($formData['data']['action']).',
+										 '.db_quote($attr_1).',
+										 '.db_quote($attr_2).',
+										 '.db_quote($comment).',
+										 '.db_quote($timeInsrtstr).')';
 
-		$result = $db->query($query);
+		$result = db_query($query);
 		if(!$result) {
 			return $response->withJson(errorHandle(mysqli_error($db), $query));
 		}
@@ -151,7 +151,7 @@ $app->group('/matches', function () use ($app) {
 
 	});
 	$app->post('/undoMatchData', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$formData = $request->getParsedBody();
 		$authToken = $request->getAttribute("jwt");
 		if(!isset($formData['event']) || $formData['event'] == '') {
@@ -184,9 +184,9 @@ $app->group('/matches', function () use ($app) {
 
 		verifyTeamPrivs($authToken->data->id, 'write', $die = true);
 		$id = uniqid();
-		$query = 'DELETE FROM match_data WHERE team_account="'.$team.'" AND id="'.mysqli_real_escape_string($db, $formData['data']['id']).'"';
+		$query = 'DELETE FROM match_data WHERE team_account="'.$team.'" AND id='.db_quote($formData['data']['id']).'';
 
-		$result = $db->query($query);
+		$result = db_query($query);
 		if(!$result) {
 			return $response->withJson(errorHandle(mysqli_error($db), $query));
 		}
@@ -205,7 +205,7 @@ $app->group('/matches', function () use ($app) {
 
 	});
 	$app->post('/startMatch', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$formData = $request->getParsedBody();
 		$authToken = $request->getAttribute("jwt");
 
@@ -228,13 +228,13 @@ $app->group('/matches', function () use ($app) {
 		$id = uniqid();
 		$time = microtime(true);
 		$query = 'INSERT INTO match_data (`id`, `team_account`, `user_id`, `match_key`, `action`, `timestamp`) VALUES
-										("'.$id.'",
-										 "'.$team.'",
-										 "'.$userId.'",
-										 "'.mysqli_real_escape_string($db, $match_key).'",
-										 "match_start",
-										 "'.round($time,4).'")';
-		$result = $db->query($query);
+										('.db_quote($id).',
+										 '.db_quote($team).',
+										 '.db_quote($userId).',
+										 '.db_quote($match_key).',
+										 '.db_quote('match_start').',
+										 '.db_quote(round($time,4)).')';
+		$result = db_query($query);
 		if(!$result) {
 			return $response->withJson(errorHandle(mysqli_error($db), $query));
 		}
@@ -249,7 +249,7 @@ $app->group('/matches', function () use ($app) {
 		return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>$msg));
 	});
 	$app->post('/updateMatchScore', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$formData = $request->getParsedBody();
 		$authToken = $request->getAttribute("jwt");
 		if(!isset($formData['match_key']) || $formData['match_key'] == '') {
@@ -261,16 +261,16 @@ $app->group('/matches', function () use ($app) {
 		}
 		$queryArr = array();
 		if(isset($formData['red_score']) && $formData['red_score'] != '' && $formData['red_score'] != 'null' && $formData['red_score'] != '-1') {
-			$queryArr[] = 'red_score="'.mysqli_real_escape_string($db, $formData['red_score']).'"';
+			$queryArr[] = 'red_score="'.db_quote($formData['red_score']).'';
 		}
 		if(isset($formData['blue_score']) && $formData['blue_score'] != '' && $formData['blue_score'] != 'null' && $formData['blue_score'] != '-1') {
-			$queryArr[] = 'blue_score="'.mysqli_real_escape_string($db, $formData['blue_score']).'"';
+			$queryArr[] = 'blue_score="'.db_quote($formData['blue_score']).'';
 		}
 		$queryStr = '';
 		if(!empty($queryArr)) {
 			$queryStr = implode(', ',$queryArr);
-			$query = 'UPDATE match_info SET '.$queryStr.' WHERE match_key="'.mysqli_real_escape_string($db, $formData['match_key']).'"';
-			$result = $db->query($query);
+			$query = 'UPDATE match_info SET '.$queryStr.' WHERE match_key='.db_quote($formData['match_key']).'';
+			$result = db_query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}

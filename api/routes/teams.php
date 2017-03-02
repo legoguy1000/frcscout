@@ -3,7 +3,7 @@ use \Firebase\JWT\JWT;
 
 $app->group('/teams', function () use ($app) {
 	$app->post('/updateMemberPrivs', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$formData = $request->getParsedBody();
 		$authToken = $request->getAttribute("jwt");
 		if(!isset($formData['id']) || $formData['id'] == '') {
@@ -13,8 +13,8 @@ $app->group('/teams', function () use ($app) {
 			return $response->withJson(array('status'=>false, 'type'=>'warning', 'msg'=>'Invalid Privs Level.'));
 		}
 		verifyTeamPrivs($authToken->data->id, 'admin', $die = true);
-		$query = 'UPDATE team_memberships SET privs="'.mysqli_real_escape_string($db, $formData['privs']).'" WHERE user_id="'.mysqli_real_escape_string($db, $formData['id']).'"';
-		$result = $db->query($query);
+		$query = 'UPDATE team_memberships SET privs='.db_quote($formData['privs']).' WHERE user_id='.db_quote($formData['id']).'';
+		$result = db_query($query);
 		if(!$result) {
 			return $response->withJson(errorHandle(mysqli_error($db), $query));
 		}
@@ -22,7 +22,7 @@ $app->group('/teams', function () use ($app) {
 	});
 	$app->group('/membership', function () use ($app) {
 		$app->post('/request', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$formData = $request->getParsedBody();
 			$authToken = $request->getAttribute("jwt");
 			if(!isset($formData['user_id']) || $formData['user_id'] == '')
@@ -36,11 +36,11 @@ $app->group('/teams', function () use ($app) {
 			verifyUser($formData['user_id'], $authToken->data->id, $die = true);
 			$id = uniqid();
 			$query = 'insert into team_memberships (id, team_number, user_id, status) VALUES
-													("'.mysqli_real_escape_string($db, $id).'", 
-													"'.mysqli_real_escape_string($db, $formData['team_number']).'",
-													"'.mysqli_real_escape_string($db, $formData['user_id']).'",
+													('.db_quote($id).',
+													'.db_quote($formData['team_number']).',
+													'.db_quote($formData['user_id']).',
 													"pending")';
-			$result = $db->query($query);
+			$result = db_query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}
@@ -59,7 +59,7 @@ $app->group('/teams', function () use ($app) {
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>'Your Request to join Team '.$formData['team_number'].' has been submitted.', 'teamInfo'=>$teamInfo));
 		});
 		$app->post('/approve', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$formData = $request->getParsedBody();
 			$authToken = $request->getAttribute("jwt");
 			if(!isset($formData['id']) || $formData['id'] == '')
@@ -72,8 +72,8 @@ $app->group('/teams', function () use ($app) {
 			$teamInfo = getTeamInfoByUser($userId);
 			$team = $teamInfo['team_number'];
 
-			$query = 'UPDATE team_memberships SET status="joined", privs="read" WHERE user_id="'.mysqli_real_escape_string($db, $formData['id']).'" AND team_number="'.mysqli_real_escape_string($db, $team).'"';
-			$result = $db->query($query);
+			$query = 'UPDATE team_memberships SET status="joined", privs="read" WHERE user_id='.db_quote($formData['id']).' AND team_number='.db_quote($team).'';
+			$result = db_query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}
@@ -89,7 +89,7 @@ $app->group('/teams', function () use ($app) {
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>'Team membership confirmed for '.$formData['userInfo']['full_name'], 'membership'=>$newMembership));
 		});
 		$app->post('/deny', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$formData = $request->getParsedBody();
 			$authToken = $request->getAttribute("jwt");
 			if(!isset($formData['id']) || $formData['id'] == '')
@@ -107,7 +107,7 @@ $app->group('/teams', function () use ($app) {
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>'Team membership denied for '.$formData['userInfo']['full_name'], 'membership'=>$newMembership));
 		});
 		$app->post('/remove', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$formData = $request->getParsedBody();
 			$authToken = $request->getAttribute("jwt");
 			if(!isset($formData['id']) || $formData['id'] == '')
@@ -127,7 +127,7 @@ $app->group('/teams', function () use ($app) {
 	});
 	$app->group('/account', function () use ($app) {
 		$app->post('/register', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$formData = $request->getParsedBody();
 			$authToken = $request->getAttribute("jwt");
 
@@ -139,16 +139,16 @@ $app->group('/teams', function () use ($app) {
 			}
 			verifyUser($formData['user_id'], $authToken->data->id, $die = true);
 
-			$query = 'insert into team_accounts (`team_number`, `contact_id`, `current_event`, `logo`, `background_header`, `background_body`, `font_color_header`, `font_color_body`) VALUES ("'.mysqli_real_escape_string($db, $formData['team_number']).'", "", NULL, "", "", "", "", "")';
+			$query = 'insert into team_accounts (`team_number`, `contact_id`, `current_event`, `logo`, `background_header`, `background_body`, `font_color_header`, `font_color_body`) VALUES ('.db_quote($formData['team_number']).', "", NULL, "", "", "", "", "")';
 			$result = $db->query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}
 			$id = uniqid();
 			$query = 'insert into team_memberships (id, team_number, user_id, privs, status) VALUES
-													("'.mysqli_real_escape_string($db, $id).'", 
-													"'.mysqli_real_escape_string($db, $formData['team_number']).'",
-													"'.mysqli_real_escape_string($db, $formData['user_id']).'",
+													('.db_quote($id).',
+													'.db_quote($formData['team_number']).',
+													'.db_quote($formData['user_id']).',
 													"admin",
 													"joined")';
 			$result = $db->query($query);
@@ -159,7 +159,7 @@ $app->group('/teams', function () use ($app) {
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>'You have successfully registered Team '.$formData['team_number'].'.', 'teamInfo'=>$teamInfo));
 		});
 		$app->post('/updateInfo', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$formData = $request->getParsedBody();
 			$authToken = $request->getAttribute("jwt");
 
@@ -188,13 +188,13 @@ $app->group('/teams', function () use ($app) {
 				);
 				newMessageToQueue('user_notification', $msg_data);
 			}
-			$query = 'UPDATE team_accounts SET logo="'.mysqli_real_escape_string($db, $logo).'",
-											   font_color_header="'.mysqli_real_escape_string($db, $h_fc).'",
-											   background_header="'.mysqli_real_escape_string($db, $h_bg).'",
-											   font_color_body="'.mysqli_real_escape_string($db, $b_fc).'",
-											   background_body="'.mysqli_real_escape_string($db, $b_bg).'",
-											   current_event="'.mysqli_real_escape_string($db, $current_event).'"
-								WHERE team_number="'.mysqli_real_escape_string($db, $formData['team_number']).'"';
+			$query = 'UPDATE team_accounts SET logo='.db_quote($logo).',
+											   font_color_header='.db_quote($h_fc).',
+											   background_header='.db_quote($h_bg).',
+											   font_color_body='.db_quote($b_fc).',
+											   background_body='.db_quote($b_bg).',
+											   current_event='.db_quote($current_event).'
+								WHERE team_number='.db_quote($formData['team_number']).'';
 			$result = $db->query($query);
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
@@ -203,11 +203,11 @@ $app->group('/teams', function () use ($app) {
 		});
 	});
 	$app->get('/search[/{search}]', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$authToken = $request->getAttribute("jwt");
-		
+
 		$data = array();
-		$search = $request->getAttribute("search");	
+		$search = $request->getAttribute("search");
 		if(isset($search) && $search != '' && $search != 'undefined') {
 			$query = 'select * from teams where team_number LIKE "%'.$search.'%" OR nickname LIKE "%'.$search.'%" ORDER BY team_number ASC';
 			$result = $db->query($query);
@@ -226,10 +226,10 @@ $app->group('/teams', function () use ($app) {
 	});
 	$app->group('/team/{team:[0-9]+}', function () use ($app) {
 		$app->get('', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$authToken = $request->getAttribute("jwt");
-			$team = $request->getAttribute("team");	
-			
+			$team = $request->getAttribute("team");
+
 			if($team == '') {
 				$data = array('status'=>true, 'msg'=>'Invalid Team Number');
 				$response->withJson($data);
@@ -243,7 +243,7 @@ $app->group('/teams', function () use ($app) {
 			if(!$result) {
 				return $response->withJson(errorHandle(mysqli_error($db), $query));
 			}
-			if($result->num_rows > 0) {		
+			if($result->num_rows > 0) {
 				$row = $result->fetch_assoc();
 				$data = $row;
 				$data['membership'] = getTeamMembership($team);
@@ -251,9 +251,9 @@ $app->group('/teams', function () use ($app) {
 			return $response->withJson($data);
 		});
 		$app->get('/checkAccount', function ($request, $response, $args) {
-			global $db;
+			$db = db_connect();
 			$authToken = $request->getAttribute("jwt");
-			$team = $request->getAttribute("team");	
+			$team = $request->getAttribute("team");
 			$data = array('status'=>false, 'active'=>false);
 			if($team == '') {
 				$response->withJson($data);
@@ -271,10 +271,10 @@ $app->group('/teams', function () use ($app) {
 		});
 	});
 	$app->get('/multipleTeamInfo/{teams}', function ($request, $response, $args) {
-		global $db;
+		$db = db_connect();
 		$authToken = $request->getAttribute("jwt");
-		$teams = $request->getAttribute("teams");	
-		
+		$teams = $request->getAttribute("teams");
+
 		if($teams == '') {
 			$data = array('status'=>true, 'msg'=>'Invalid Request');
 			$response->withJson($data);
