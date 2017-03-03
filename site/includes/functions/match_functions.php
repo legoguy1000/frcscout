@@ -19,15 +19,15 @@ function insertMatch($matchData, $multiple = false)
 
 				$event_key = $match['event_key'];
 				$key = $match['key'];
-				error_log($match['key'], 0);
+	//			error_log($match['key'], 0);
 				if($match['comp_level'] == 'qm')
 				{
 					$query = 'select * from match_info where match_key = '.db_quote($key);
 					$match_query = db_select_single($query);
-					error_log('match: '.$match_query, 0);
+//					error_log('match: '.$match_query, 0);
 					if(is_null($match_query))
 					{
-						error_log(json_encode($match), 0);
+	//					error_log(json_encode($match), 0);
 						$valuesArr[] = insertMatchMysqlValue($match);
 					}
 					else
@@ -40,7 +40,7 @@ function insertMatch($matchData, $multiple = false)
 		$values = '';
 		if(is_array($valuesArr))
 		{
-			$values = implode(',',$valuesArr);
+			$values = implode(',',array_filter($valuesArr));
 		}
 		else
 		{
@@ -85,7 +85,12 @@ function insertMatchMysqlValue($matchData)
 							'.db_quote($matchData['alliances']['red']['score']).',
 							'.db_quote($matchData['alliances']['blue']['score']).',
 							'.db_quote($status).')';
-	return $string;
+	if($key != '') {
+		return $string;
+	}
+	else  {
+		return false;
+	}
 }
 
 function getYearByEventKey($event_key)
