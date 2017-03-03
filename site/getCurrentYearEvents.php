@@ -9,13 +9,13 @@ if($baApiCall !== FALSE) {
 		$exists = checkEventInfo($event['key']);
 		$matches = checkEventMatches($event['key']);
 		if(!$exists) {
-			//insertNewEvent($event);
+			insertNewEvent($event);
 		}
 		if(!$exists || !$matches) {
 			$formData = array(
 				'message_type' => 'schedule_updated',
 				'message_data' => array(
-					'event_key' => $event
+					'event_key' => $event['key'])
 				)
 			);
 			newMessageToQueue('ba_webhook', $formData);
@@ -30,12 +30,14 @@ if(date("W") >= 45) {
 			error_log($event['key'], 0);
 			$exists = checkEventInfo($event['key']);
 			$matches = checkEventMatches($event['key']);
-			if(!$exists || !$matches) {
+			if(!$exists) {
 				insertNewEvent($event);
+			}
+			if(!$exists || !$matches) {
 				$formData = array(
 					'message_type' => 'schedule_updated',
 					'message_data' => array(
-						'event_key' => $event
+						'event_key' => $event['key'])
 					)
 				);
 				newMessageToQueue('ba_webhook', $formData);
