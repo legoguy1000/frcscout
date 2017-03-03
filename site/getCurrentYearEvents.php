@@ -19,7 +19,7 @@ if($baApiCall !== FALSE) {
 		}
 	}
 }
-if(date("W") > = 45) {
+if(date("W") >= 45) {
 	$baApiCall = tbaApiCallEventsYear($year+1);
 	if($baApiCall !== FALSE) {
 		$eventDataArr = json_decode($baApiCall, true);
