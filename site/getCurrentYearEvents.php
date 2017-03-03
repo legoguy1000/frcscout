@@ -8,6 +8,9 @@ if($baApiCall !== FALSE) {
 		error_log($event['key'], 0);
 		$exists = checkEventInfo($event['key']);
 		$matches = checkEventMatches($event['key']);
+		if(!$exists) {
+			insertNewEvent($event);
+		}
 		if(!$exists || !$matches) {
 			insertNewEvent($event);
 			$formData = array(
