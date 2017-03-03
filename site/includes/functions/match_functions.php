@@ -121,8 +121,21 @@ function checkEventInfo($event_key)
 	$db = db_connect();
 	$data = false;
 	$query = 'select * from events where event_key = '.db_quote($event_key);
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$event = db_select_single($query);
+	if(!is_null($event))
+	{
+		$data = true;
+	}
+	return $data;
+}
+
+function checkEventMatches($event_key)
+{
+	$db = db_connect();
+	$data = false;
+	$query = 'select * from match_info where event_key = '.db_quote($event_key);
+	$matches = db_select($query);
+	if(count($matches) > 0)
 	{
 		$data = true;
 	}
@@ -144,7 +157,7 @@ function insertNewEvent($eventData)
 	$query = 'INSERT INTO events (id,event_key,year,event_code,name,address,location,start_date,end_date,website,timezone,official) VALUES
 								 ('.db_quote(uniqid()).',
 								 	'.db_quote($eventData['key']).',
-									'.db_quote($eventData['year']).',
+									'.db_escape($eventData['year']).',
 									'.db_quote($eventData['event_code']).',
 									'.db_quote($eventData['name']).',
 								  '.db_quote($eventData['venue_address']).',
