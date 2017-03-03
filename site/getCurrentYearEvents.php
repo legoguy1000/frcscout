@@ -12,7 +12,6 @@ if($baApiCall !== FALSE) {
 			//insertNewEvent($event);
 		}
 		if(!$exists || !$matches) {
-			insertNewEvent($event);
 			$formData = array(
 				'message_type' => 'schedule_updated',
 				'message_data' => array(
