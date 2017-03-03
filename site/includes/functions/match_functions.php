@@ -19,10 +19,12 @@ function insertMatch($matchData, $multiple = false)
 
 				$event_key = $match['event_key'];
 				$key = $match['key'];
+				error_log($match['key'], 0);
 				if($match['comp_level'] == 'qm')
 				{
 					$query = 'select * from match_info where match_key = '.db_quote($key);
 					$match = db_select_single($query);
+					error_log('result: '.$result, 0);
 					if(is_null($match))
 					{
 						error_log(json_encode($match), 0);
