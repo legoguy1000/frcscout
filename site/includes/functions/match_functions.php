@@ -121,8 +121,21 @@ function checkEventInfo($event_key)
 	$db = db_connect();
 	$data = false;
 	$query = 'select * from events where event_key = '.db_quote($event_key);
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$event = db_select_single($query);
+	if(!is_null($event))
+	{
+		$data = true;
+	}
+	return $data;
+}
+
+function checkEventMatches($event_key)
+{
+	$db = db_connect();
+	$data = false;
+	$query = 'select * from match_info where event_key = '.db_quote($event_key);
+	$matches = db_select($query);
+	if(count($matches) > 0)
 	{
 		$data = true;
 	}
