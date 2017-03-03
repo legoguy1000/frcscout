@@ -16,7 +16,7 @@ function insertMatch($matchData, $multiple = false)
 			$valuesArr = array();
 			foreach($matchData as $match)
 			{
-				error_log(json_encode($match), 0);
+
 				$event_key = $match['event_key'];
 				$key = $match['key'];
 				if($match['comp_level'] == 'qm')
@@ -25,7 +25,7 @@ function insertMatch($matchData, $multiple = false)
 					$match = db_select_single($query);
 					if(is_null($match))
 					{
-
+						error_log(json_encode($match), 0);
 						$valuesArr[] = insertMatchMysqlValue($match);
 					}
 					else
