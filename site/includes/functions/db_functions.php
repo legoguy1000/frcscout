@@ -31,7 +31,7 @@ function db_query($query) {
     // Query the database
     $result = $db->query($query);
 		if($result === false) {
-				db_error();
+				db_error($query);
 				return false;
 		}
     return $result;
@@ -66,14 +66,19 @@ function db_select_single($query) {
     return $row;
 }
 
-function db_quote($value) {
+function db_escape($value) {
     $db = db_connect();
-    return '"'.mysqli_real_escape_string($db,$value).'"';
+    return mysqli_real_escape_string($db,$value);
 }
 
-function db_error() {
+function db_quote($value) {
     $db = db_connect();
-		errorHandle(mysqli_error($db));
+    return '"'.db_escape($value).'"';
+}
+
+function db_error($query) {
+    $db = db_connect();
+		errorHandle(mysqli_error($db), $query);
     return mysqli_error($db);
 }
 
