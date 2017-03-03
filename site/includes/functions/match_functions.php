@@ -21,12 +21,12 @@ function insertMatch($matchData, $multiple = false)
 				if($match['comp_level'] == 'qm')
 				{
 					$query = 'select * from match_info where match_key = '.db_quote($key);
-					$match = db_select($query);
-					if(count($match) == 0)
+					$match = db_select_single($query);
+					if(is_null($match))
 					{
 						$valuesArr[] = insertMatchMysqlValue($match);
 					}
-					elseif(count($match) == 1)
+					else
 					{
 						updateMatchInfo($match);
 					}
@@ -53,6 +53,7 @@ function insertMatch($matchData, $multiple = false)
 
 function insertMatchMysqlValue($matchData)
 {
+	error_log(json_encode($matchData), 0);
 	$year = getYearByEventKey($matchData['event_key']);
 	$event_code = getEventByEventKey($matchData['event_key']);
 	$key = $matchData['key'];

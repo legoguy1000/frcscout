@@ -5,7 +5,7 @@ $baApiCall = tbaApiCallEventsYear($year);
 if($baApiCall !== FALSE) {
 	$eventDataArr = json_decode($baApiCall, true);
 	foreach($eventDataArr as $event) {
-		error_log($event['key'], 0);
+//		error_log($event['key'], 0);
 		$exists = checkEventInfo($event['key']);
 		$matches = checkEventMatches($event['key']);
 		if(!$exists) {
@@ -15,7 +15,7 @@ if($baApiCall !== FALSE) {
 			$formData = array(
 				'message_type' => 'schedule_updated',
 				'message_data' => array(
-					'event_key' => $event['key'])
+					'event_key' => $event['key']
 				)
 			);
 			newMessageToQueue('ba_webhook', $formData);
@@ -27,7 +27,7 @@ if(date("W") >= 45) {
 	if($baApiCall !== FALSE) {
 		$eventDataArr = json_decode($baApiCall, true);
 		foreach($eventDataArr as $event) {
-			error_log($event['key'], 0);
+	//		error_log($event['key'], 0);
 			$exists = checkEventInfo($event['key']);
 			$matches = checkEventMatches($event['key']);
 			if(!$exists) {
@@ -37,7 +37,7 @@ if(date("W") >= 45) {
 				$formData = array(
 					'message_type' => 'schedule_updated',
 					'message_data' => array(
-						'event_key' => $event['key'])
+						'event_key' => $event['key']
 					)
 				);
 				newMessageToQueue('ba_webhook', $formData);
