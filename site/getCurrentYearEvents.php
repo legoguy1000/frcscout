@@ -8,7 +8,8 @@ if($baApiCall !== FALSE)
 	foreach($eventDataArr as $event)
 	{
 		$exists = checkEventInfo($event['key']);
-		if(!$exists)
+		$matches = checkEventMatches($event['key']);
+		if(!$exists || !$matches)
 		{
 			insertNewEvent($event);
 			$formData = array(
@@ -28,7 +29,8 @@ if($baApiCall !== FALSE)
 	foreach($eventDataArr as $event)
 	{
 		$exists = checkEventInfo($event['key']);
-		if(!$exists)
+		$matches = checkEventMatches($event['key']);
+		if(!$exists || !$matches)
 		{
 			insertNewEvent($event);
 			$formData = array(
