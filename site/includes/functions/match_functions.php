@@ -69,7 +69,7 @@ function insertMatchMysqlValue($matchData)
 	$string = '('.db_quote(uniqid()).',
 							'.db_quote($matchData['event_key']).',
 							'.db_quote($matchData['comp_level']).',
-							'.db_quote($matchData['match_number']).',
+							'.db_escape($matchData['match_number']).',
 							'.db_quote($key).',
 							'.db_quote($red1).',
 							'.db_quote($red2).',

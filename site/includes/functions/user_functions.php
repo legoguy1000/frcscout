@@ -4,14 +4,14 @@ function getUserDataFromParam($param, $value)
 {
 	$db = db_connect();
 	$data = array();
-	$query = 'select users.* from users WHERE users.'.mysqli_real_escape_string($db, $param).'='.db_quote($value);
+	$query = 'select users.* from users WHERE users.'.db_escape($param).'='.db_quote($value);
 	$user = db_select_single($query);
 	if(!is_null($user))
 	{
 		$data = $user;
-		$data['full_name'] = $row['fname'].' '.$row['lname'];
+		$data['full_name'] = $user['fname'].' '.$user['lname'];
 		//$data['team_info'] = getTeamMembershipByUser($row['id']);
-		$query2 = 'select notification_preferences.* from notification_preferences WHERE notification_preferences.user_id='.db_quote($row['id']);
+		$query2 = 'select notification_preferences.* from notification_preferences WHERE notification_preferences.user_id='.db_quote($user['id']);
 		$prefs = db_select_single($query);
 		$data['notification_preferences'] = convertNotificationPreferencesToBool($prefs);
 	}
@@ -35,13 +35,15 @@ function checkUserLogin($userData)
 		$id = uniqid();
 		$date = date('Y-n-d');
 		$query = 'insert into users (id, email, fname, lname, creation)
-										values ("'.mysqli_real_escape_string($db, $id).'",
-												"'.mysqli_real_escape_string($db, $userData['email']).'",
-												"'.mysqli_real_escape_string($db, $userData['fname']).'",
-												"'.mysqli_real_escape_string($db, $userData['lname']).'",
-												"'.mysqli_real_escape_string($db, $date).'")';
-		$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-		initialUserNotificationPreferences($id);
+										values ('.db_quote($id).',
+														'.db_quote($userData['email']).',
+														'.db_quote($userData['fname']).',
+														'.db_quote($userData['lname']).',
+														'.db_quote($date).')';
+		$result = db_query($query);
+		if($result) {
+			initialUserNotificationPreferences($id);
+		}
 		$data = getUserDataFromParam('id', $id);
 	}
 	return $data;
@@ -50,8 +52,8 @@ function checkUserLogin($userData)
 function initialUserNotificationPreferences($user_id)
 {
 	global $db;
-	$query = 'insert into notification_preferences (user_id) values ("'.mysqli_real_escape_string($db, $user_id).'")';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
+	$query = 'insert into notification_preferences (user_id) values ('.db_quote($user_id).')';
+	$result = db_query($query);
 }
 
 function verifyUser($formId, $tokenId, $die = true)
@@ -78,11 +80,10 @@ function verifyTeamPrivs($userId, $requiredPrivs, $die = true)
 	global $db;
 	$dbPrivs = null;
 	$query = 'SELECT team_memberships.* FROM team_memberships WHERE user_id="'.$userId.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	if($result->num_rows > 0)
+	$membership = db_select_single($query);
+	if(!is_null($membership))
 	{
-		$row = $result->fetch_assoc();
-		$dbPrivs = $row['privs'];
+		$dbPrivs = $membership['privs'];
 	}
 
 	$privsArr = array(

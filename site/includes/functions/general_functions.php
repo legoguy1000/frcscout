@@ -125,7 +125,7 @@ function insertLogs($userId, $type, $status, $msg)
 	$ip = getRealIpAddr();
 	$user_id = 'NUll';
 	if($userId != '' && $userId != 'NULL') {
-		$user_id = ''.db_quote($userId).'"';
+		$user_id = db_quote($userId);
 	}
 	$query = 'INSERT INTO logs (id, user_id, type, status, msg, remote_ip) VALUES ('.db_quote($id).', '.$user_id.', '.db_quote($type).', '.db_quote($status).', '.db_quote($msg).', '.db_quote($ip).')';
 	$result = db_query($query);

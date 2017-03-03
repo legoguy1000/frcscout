@@ -13,7 +13,7 @@ function smtpCredentials()
 	return $data;
 }
 
-function errorHandle($error, $query)
+function errorHandle($error, $query = '')
 {
 	$db = db_connect();
 	$userId = '';
