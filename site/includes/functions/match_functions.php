@@ -23,9 +23,9 @@ function insertMatch($matchData, $multiple = false)
 				if($match['comp_level'] == 'qm')
 				{
 					$query = 'select * from match_info where match_key = '.db_quote($key);
-					$match = db_select_single($query);
-					error_log('match: '.$match, 0);
-					if(is_null($match))
+					$match_query = db_select_single($query);
+					error_log('match: '.$match_query, 0);
+					if(is_null($match_query))
 					{
 						error_log(json_encode($match), 0);
 						$valuesArr[] = insertMatchMysqlValue($match);
