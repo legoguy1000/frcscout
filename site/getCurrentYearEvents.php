@@ -9,7 +9,7 @@ if($baApiCall !== FALSE) {
 		$exists = checkEventInfo($event['key']);
 		$matches = checkEventMatches($event['key']);
 		if(!$exists) {
-			insertNewEvent($event);
+			//insertNewEvent($event);
 		}
 		if(!$exists || !$matches) {
 			insertNewEvent($event);
