@@ -5,6 +5,7 @@ $baApiCall = tbaApiCallEventsYear($year);
 if($baApiCall !== FALSE) {
 	$eventDataArr = json_decode($baApiCall, true);
 	foreach($eventDataArr as $event) {
+		error_log($event['key'], 0);
 		$exists = checkEventInfo($event['key']);
 		$matches = checkEventMatches($event['key']);
 		if(!$exists || !$matches) {
@@ -24,6 +25,7 @@ if(date("W") >= 45) {
 	if($baApiCall !== FALSE) {
 		$eventDataArr = json_decode($baApiCall, true);
 		foreach($eventDataArr as $event) {
+			error_log($event['key'], 0);
 			$exists = checkEventInfo($event['key']);
 			$matches = checkEventMatches($event['key']);
 			if(!$exists || !$matches) {
