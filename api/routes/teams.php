@@ -174,8 +174,7 @@ $app->group('/teams', function () use ($app) {
 			$current_event = isset($formData['current_event']) ? $formData['current_event']:'';
 			verifyTeamPrivs($authToken->data->id, 'admin', $die = true);
 			$currentTeamInfo = getTeamInfoByUser($authToken->data->id);
-			if($currentTeamInfo['current_event'] != $current_event)
-			{
+			if($currentTeamInfo['current_event'] != $current_event && $current_event != '') {
 				$eventInfo = getEventInfo($current_event);
 				$users = getTeamMembership($formData['team_number'], array('status'=>array('joined'), 'not_user'=>array($authToken->data->id)));
 				$msg_data = array(
@@ -188,16 +187,21 @@ $app->group('/teams', function () use ($app) {
 				);
 				newMessageToQueue('user_notification', $msg_data);
 			}
+			if($current_event == '') {
+				$current_event = 'NULL';
+			} else {
+				$current_event = db_quote($current_event);
+			}
 			$query = 'UPDATE team_accounts SET logo='.db_quote($logo).',
 											   font_color_header='.db_quote($h_fc).',
 											   background_header='.db_quote($h_bg).',
 											   font_color_body='.db_quote($b_fc).',
 											   background_body='.db_quote($b_bg).',
-											   current_event='.db_quote($current_event).'
+											   current_event='.$current_event.'
 								WHERE team_number='.db_quote($formData['team_number']).'';
-			$result = $db->query($query);
+			$result = $db_query($query);
 			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
+				return $response->withJson($db_error($query));
 			}
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>'Team Information updated for Team '.$formData['team_number']));
 		});

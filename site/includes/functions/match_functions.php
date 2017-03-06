@@ -311,11 +311,10 @@ function getMatchByMatchKey($matchKey)
 	$data = array();
 	$final_data = array();
 	$query = 'select * from match_info WHERE match_key = "'.$matchKey.'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$match = db_select_single($query);
+	if(!is_null($match))
 	{
-		$row = $result->fetch_assoc();
-		$data = $row;
+		$data = $match;
 		$final_data = $data;
 	}
 	else
@@ -330,6 +329,7 @@ function getMatchByMatchKey($matchKey)
 			'status'=>'',
 		);
 	}
+	$last_match = isLastMatchByMatchKey($matchKey);
 	$final_data['alliances'] = generateAlliances($data);
 	$final_data['completed'] = $data['status']=='complete';
 	$final_data['ready_to_start'] = matchReadyToStart($data);
@@ -380,11 +380,10 @@ function getLastMatchByEvent($event)
 	if(isset($event) && $event=='')
 	{
 		$query = 'select * from match_info WHERE event_key = "'.$event.'" ORDER BY match_num DESC';
-		$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-		if($result->num_rows > 0)
+		$match = db_select_single($query);
+		if(!is_null($match))
 		{
-			$row = $result->fetch_assoc();
-			$data = $row['match_num'];
+			$data = $match['match_num'];
 		}
 	}
 	return $data;
@@ -399,6 +398,14 @@ function isLastMatch($match, $event)
 		$return = $match == $last_match;
 	}
 	return $return;
+}
+
+function isLastMatchByMatchKey($match_key = null)
+{
+		$matchKeyArr = explode('_',$match_key);
+		$event_key = $matchKeyArr[0];
+		$match = (int)trim(filter_var($matchKeyArr[1], FILTER_SANITIZE_NUMBER_INT));
+		return isLastMatch($match, $event_key);
 }
 
 function getTeamInfoFromNumber($team)
