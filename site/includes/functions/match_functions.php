@@ -402,10 +402,10 @@ function isLastMatch($match, $event)
 
 function isLastMatchByMatchKey($match_key = null)
 {
-		$matchKeyArr = explode('_',$match_key);
-		$event_key = $matchKeyArr[0];
-		$match = (int)trim(filter_var($matchKeyArr[1], FILTER_SANITIZE_NUMBER_INT));
-		return isLastMatch($match, $event_key);
+		$matchKeyArr = getEventMatchByMatchKey($match_key);
+		$event_key = $matchKeyArr['event_key'];
+		$match_num = $matchKeyArr['match_num'];
+		return isLastMatch($match_num, $event_key);
 }
 
 function getTeamInfoFromNumber($team)
