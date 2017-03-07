@@ -119,11 +119,10 @@ $app->group('/matches', function () use ($app) {
 										 '.db_quote($attr_1).',
 										 '.db_quote($attr_2).',
 										 '.db_quote($comment).',
-										 '.db_quote($timeInsrtstr).')';
-
+										 '.$timeInsrtstr.')';
 		$result = db_query($query);
 		if(!$result) {
-			return $response->withJson(errorHandle(mysqli_error($db), $query));
+			return $response->withJson(db_error($query));
 		}
 		$dataToWS = array(
 			'type' => 'match_data',
