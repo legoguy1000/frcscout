@@ -329,7 +329,7 @@ function getMatchByMatchKey($matchKey)
 			'status'=>'',
 		);
 	}
-	$last_match = isLastMatchByMatchKey($matchKey);
+	$final_data['last_match'] = isLastMatchByMatchKey($matchKey);
 	$final_data['alliances'] = generateAlliances($data);
 	$final_data['completed'] = $data['status']=='complete';
 	$final_data['ready_to_start'] = matchReadyToStart($data);
