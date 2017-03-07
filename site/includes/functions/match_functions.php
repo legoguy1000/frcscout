@@ -392,7 +392,7 @@ function getLastMatchByEvent($event)
 function isLastMatch($match, $event)
 {
 	$return = false;
-	if(isset($match) && isset($event) && $match=='' && $event=='')
+	if(isset($match) && isset($event) && $match!='' && $event!='')
 	{
 		$last_match = getLastMatchByEvent($event);
 		$return = $match == $last_match;
