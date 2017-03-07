@@ -1,5 +1,5 @@
 <?php
 include('includes.php');
 
-echo getLastMatchByEvent($event);
+echo getLastMatchByEvent('2017vahay');
 ?>
