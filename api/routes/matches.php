@@ -8,17 +8,11 @@ $app->group('/matches', function () use ($app) {
 				$db = db_connect();
 				$authToken = $request->getAttribute("jwt");
 				$match_key = $request->getAttribute("match_key");
-
-				$matchKeyArr = getEventMatchByMatchKey($match_key);
-				$event_key = $matchKeyArr['event_key'];
-				$match_num = $matchKeyArr['match_num'];
-
 				$userId = $authToken->data->id;
 				$teamInfo = getTeamInfoByUser($userId);
 				$team = $teamInfo['team_number'];
 				$data = array();
 				$data = getMatchByMatchKey($match_key);
-				$data['last_match'] = isLastMatch($match_num, $event_key);
 				$data['match_data'] = getMatchData($match_key, $team);
 				$data['server_time'] = time();
 				if(!checkMatchKeyFormat($match_key)) {
