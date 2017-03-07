@@ -29,13 +29,13 @@ function getEventRankings($event_key)
 function get2017ReportTableData($event, $allTeams, $teamAccount)
 {
 	global $db;
-	
+
 	$year = 2017;
-	
+
 	$data = array();
 	$teamsQuery = array();
 	$legend = array();
-	$teamsQueryString = '';	
+	$teamsQueryString = '';
 	if(isset($allTeams))
 	{
 		foreach($allTeams as $team)
@@ -48,7 +48,7 @@ function get2017ReportTableData($event, $allTeams, $teamAccount)
 			$teamsQueryString = 'AND ('.implode(' OR ',$teamsQuery).')';
 		}
 	}
-	
+
 	$totalPoints = array();
 	$autoPoints = array();
 	$telePoints = array();
@@ -81,9 +81,9 @@ function get2017ReportTableData($event, $allTeams, $teamAccount)
 			$timestamp = $row['timestamp'];
 			$attr_1 = $row['attr_1'];
 			$multiplier = isset($attr_1) && $attr_1!=0 ? (int)$attr_1:1;
-			
+
 			$duringAuto = $timestamp-$matchStart <= 15;
-			
+
 			if(!isset($totalPoints[$team_number][$match]))
 			{
 				$totalPoints[$team_number][$match] = 0;
@@ -116,8 +116,8 @@ function get2017ReportTableData($event, $allTeams, $teamAccount)
 			{
 				$techFoulCounts[$team_number][$match] = 0;
 			}
-					
-			
+
+
 			if($action == 'high_goal' && $duringAuto)
 			{
 				$totalPoints[$team_number][$match] += $pointValues['auto_high_goal']*$multiplier;
@@ -129,7 +129,7 @@ function get2017ReportTableData($event, $allTeams, $teamAccount)
 				$totalPoints[$team_number][$match] += $pointValues['tele_high_goal']*$multiplier;
 				$telePoints[$team_number][$match] += $pointValues['tele_high_goal']*$multiplier;
 				$highGoals[$team_number][$match] += 1*$multiplier;
-				
+
 			}
 			elseif($action == 'low_goal' && $duringAuto)
 			{
@@ -150,13 +150,13 @@ function get2017ReportTableData($event, $allTeams, $teamAccount)
 			}
 			elseif($action == 'cross_baseline' && $duringAuto)
 			{
-				$totalPoints[$team_number][$match] += $pointValues['auto_cross_baseline'];
-				$autoPoints[$team_number][$match] += $pointValues['auto_cross_baseline'];
+				$totalPoints[$team_number][$match] += $pointValues['cross_baseline'];
+				$autoPoints[$team_number][$match] += $pointValues['cross_baseline'];
 			}
 			elseif($action == 'deliver_gear')
 			{
 				$gearsDelivered[$team_number][$match] += 1;
-			}		
+			}
 			elseif($action == 'foul')
 			{
 				$foulCounts[$team_number][$match] += 1;
@@ -167,7 +167,7 @@ function get2017ReportTableData($event, $allTeams, $teamAccount)
 			}
 		}
 	}
-	$rankings = getEventRankings($event);	
+	$rankings = getEventRankings($event);
 	$teamList = sort($allTeams);
 	$numMatches = array();
 	$allData = array();
@@ -252,7 +252,7 @@ function get2017ReportTableData($event, $allTeams, $teamAccount)
 		}
 		$i++;
 	}
-	
+
 	$data = array(
 		'allData' => $allData,
 		'graphData' => $graphData,
