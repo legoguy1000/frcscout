@@ -377,7 +377,7 @@ function getLastMatchByEvent($event)
 {
 	$db = db_connect();
 	$data = null;
-	if(isset($event) && $event=='')
+	if(isset($event) && $event!='')
 	{
 		$query = 'select * from match_info WHERE event_key = "'.$event.'" ORDER BY match_num DESC';
 		$match = db_select_single($query);
