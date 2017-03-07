@@ -249,15 +249,12 @@ function getMatchesByEventKey($event_key)
 	$data = array();
 	$db = db_connect();
 	$query = 'select * from match_info where event_key = "'.$event_key.'" ORDER BY match_num ASC';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$matches = db_select($query);
+	foreach($matches as $match)
 	{
-		while($row = $result->fetch_assoc())
-		{
-			$temp = $row;
-			$temp['alliances'] = generateAlliances($row);
-			$data[$row['match_key']] = $temp;
-		}
+		$temp = $match;
+		$temp['alliances'] = generateAlliances($match);
+		$data[$match['match_key']] = $temp;
 	}
 	return $data;
 }
@@ -268,8 +265,8 @@ function checkEventComplete($event_key)
 	$db = db_connect();
 	$return = true;
 	$query = 'select * from match_info where event_key = "'.$event_key.'" AND status <> "complete" ORDER BY match_num ASC';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$matches = db_select($query);
+	if(count($matches) > 0)
 	{
 		$return = false;
 	}
@@ -281,13 +278,10 @@ function getEventsByYear($year)
 	$db = db_connect();
 	$data = array();
 	$query = 'select * from events where year = "'.$year.'" ORDER BY name ASC';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$events = db_select_single($query);
+	foreach($events as $event)
 	{
-		while($row = $result->fetch_assoc())
-		{
-			$data[$row['event_key']] = $row;
-		}
+		$data[$event['event_key']] = $event;
 	}
 	return $data;
 }
@@ -412,14 +406,13 @@ function getTeamInfoFromNumber($team)
 {
 	$db = db_connect();
 	$data = array();
-	if(isset($team) && $team!='')
+	if(isset($team) && $team != '')
 	{
 		$query = 'select * from teams WHERE team_number = "'.$team.'"';
-		$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-		if($result->num_rows > 0)
+		$team = db_select_single($query);
+		if(!is_null($team))
 		{
-			$row = $result->fetch_assoc();
-			$data = $row;
+			$data = $team;
 		}
 	}
 	return $data;
@@ -430,13 +423,12 @@ function getMatchData_start($match_key, $team)
 	$db = db_connect();
 	$data = false;
 	$query = 'select * from match_data WHERE match_key = "'.$match_key.'" AND team_account = "'.$team.'" AND action = "match_start" AND timestamp <= '.(microtime(true)+2);
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-	if($result->num_rows > 0)
+	$match = db_select_single($query);
+	if(!is_null($match))
 	{
-		$row = $result->fetch_assoc();
 		$data = array();
-		$data['match_start'] = $row['timestamp'];
-		$data['raw'] = $row;
+		$data['match_start'] = $match['timestamp'];
+		$data['raw'] = $match;
 	}
 	return $data;
 }
@@ -456,24 +448,20 @@ function getMatchData($match_key, $team)
 		{
 			$data['match_start'] = $startArr['match_start'];
 			$data['match_started'] = true;
-
+			$data['team_data'] = array();
 			$query = 'select * from match_data WHERE match_key = "'.$match_key.'" AND team_account = "'.$team.'" AND team_number is not NULL';
-			$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-			if($result->num_rows > 0)
+			$matchData = db_select($query);
+			foreach($matchData as $md)
 			{
-				$data['team_data'] = array();
-				while($row = $result->fetch_assoc())
-				{
-					$team = $row['team_number'];
-					$action = $row['action'];
-					$timestamp = $row['timestamp'];
-					$gameTime = $timestamp - $data['match_start'];
-					$data['team_data'][(string)$team][$action][] = array(
-						'timestamp' => $timestamp,
-						'game_time' => $gameTime,
-						'raw' => $row
-					);
-				}
+				$team = $md['team_number'];
+				$action = $md['action'];
+				$timestamp = $md['timestamp'];
+				$gameTime = $timestamp - $data['match_start'];
+				$data['team_data'][(string)$team][$action][] = array(
+					'timestamp' => $timestamp,
+					'game_time' => $gameTime,
+					'raw' => $md
+				);
 			}
 		}
 	}
@@ -511,8 +499,8 @@ function oneTimeActionComplete($match_key, $team, $team_account, $action)
 	if($isOT)
 	{
 		$query = 'SELECT * FROM match_data WHERE team_account="'.$team_account.'" AND team_number="'.$team.'" AND match_key="'.$match_key.'" AND action="'.$action.'"';
-		$result = $db->query($query) or die(errorHandle(mysqli_error($db)));
-		if($result->num_rows > 0)
+		$event = db_select_single($query);
+		if(!is_null($event))
 		{
 			$return = true;
 		}

@@ -289,7 +289,7 @@ angular.module('frcScout')
 						}
 						else
 						{
-							$scope.matchDataEntry.data[MdesData.team_number][MdesData.action].push(MdesData);
+							$scope.matchDataEntry.data[MdesData.team_number][MdesData.action][MdesData.id] = MdesData;
 						}
 						console.log(JSON.stringify(MdesData, null, 4));
 					}
