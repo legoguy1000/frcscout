@@ -2,13 +2,13 @@
 function get2016ReportData($event, $allTeams, $teamAccount)
 {
 	global $db;
-	
+
 	$year = 2016;
-	
+
 	$data = array();
 	$teamsQuery = array();
 	$legend = array();
-	$teamsQueryString = '';	
+	$teamsQueryString = '';
 	if(isset($allTeams))
 	{
 		foreach($allTeams as $team)
@@ -21,7 +21,7 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 			$teamsQueryString = 'AND ('.implode(' OR ',$teamsQuery).')';
 		}
 	}
-	
+
 	$allindividualScores = array();
 	$highGoalTimes = array();
 	$lowGoalTimes = array();
@@ -31,10 +31,10 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 	$defenseCrossings = array();
 	$pointValues = getPointValuesByYear($year);
 	$query = 'select match_data.*, SUBSTRING_INDEX(`match_key`, "_", 1) as event_key FROM match_data WHERE team_account="'.$teamAccount.'" '.$teamsQueryString.' HAVING event_key = "'.$event.'" ORDER BY timestamp ASC';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	if($result->num_rows > 0)
+	$matchRows = db_select($query);
+	if(count($matchRows) > 0)
 	{
-		while($row=$result->fetch_assoc())
+		foreach($matchRows as $row)
 		{
 			$team_number = $row['team_number'];
 			$match = $row['match_key'];
@@ -42,9 +42,9 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 			$matchStart = $matchStartArr['match_start'];
 			$action = $row['action'];
 			$timestamp = $row['timestamp'];
-			
+
 			$duringAuto = $timestamp-$matchStart <= 15;
-			
+
 			if(!isset($allindividualScores[$team_number][$match]))
 			{
 				$allindividualScores[$team_number][$match] = 0;
@@ -76,12 +76,12 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 			if(!isset($highGoalTimes[$team_number][$match]))
 			{
 				$highGoalTimes[$team_number][$match] = array($matchStart);
-			}	
+			}
 			if(!isset($lowGoalTimes[$team_number][$match]))
 			{
 				$lowGoalTimes[$team_number][$match] = array($matchStart);
-			}			
-			
+			}
+
 			if($action == 'high_goal' && $duringAuto)
 			{
 				$allindividualScores[$team_number][$match] += $pointValues['auto_high_goal'];
@@ -115,7 +115,7 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 			elseif($action == 'reach_defense' && $duringAuto)
 			{
 				$allindividualScores[$team_number][$match] += $pointValues['auto_reach_defense'];
-			}		
+			}
 			elseif($action == 'foul')
 			{
 				$foulCounts['foul'][$team_number][$match] += 1;
@@ -152,11 +152,11 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 					$i = count( $defenseCrossings[$team_number][$match][$defense] ) - 1;
 					$defenseCrossings[$team_number][$match][$defense][$i]['end'] = $timestamp;
 					$defenseCrossings[$team_number][$match][$defense][$i]['status'] = 'fail';
-				}	
+				}
 			}
 		}
 	}
-	
+
 	$defenseCrossTimes = array();
 	$defenseCrossAtttemps = array('success'=>array(), 'all'=>array());
 	foreach($defenseCrossings as $team=>$data)
@@ -172,18 +172,18 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 						$defenseCrossAtttemps['all'][$defense][$team] = 0;
 					}
 					$defenseCrossAtttemps['all'][$defense][$team] += 1;
-					
+
 					if($cross['status'] == 'success')
 					{
 						$score = $cross['auto'] ? 10:5;
 						$allindividualScores[$team][$match] += $score;
-						
+
 						if(!isset($defenseCrossTimes[$defense][$team]))
 						{
 							$defenseCrossTimes[$defense][$team] = array();
 						}
 						$defenseCrossTimes[$defense][$team][] = $cross['time'];
-						
+
 						if(!isset($defenseCrossAtttemps['success'][$defense][$team]))
 						{
 							$defenseCrossAtttemps['success'][$defense][$team] = 0;
@@ -194,7 +194,7 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 			}
 		}
 	}
-	
+
 	$teamList = sort($allTeams);
 	$numMatches = array();
 	$xLabels = array();
@@ -219,11 +219,11 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 		'xLabels' => $xLabels,
 	);
 
-	
-	
+
+
 
 	$defTimeAvg = array();
-	
+
 	$i = 0;
 	foreach($defenseCrossTimes as $defense=>$data)
 	{
@@ -249,7 +249,7 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 		'xLabels' => $legend,
 		'legend' => array_keys($defenseCrossTimes)
 	);
-	
+
 	$defAttemps = array();
 	$i = 0;
 	foreach($defenseCrossAtttemps['all'] as $defense=>$data)
@@ -267,13 +267,13 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 		}
 		$i++;
 	}
-	
+
 	$defAttemptsArr = array(
 		'scores' => $defAttemps,
 		'xLabels' => $legend,
 		'legend' => array_keys($defenseCrossAtttemps['all'])
 	);
-	
+
 	// Average/Total Points
 	$averagePoints = array();
 	$sumPoints = array();
@@ -293,7 +293,7 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 	$regFoulsAvg = array();
 	$techFoulsSum = array();
 	$techFoulsAvg = array();
-	
+
 	$i = 0;
 	foreach($allTeams as $team)
 	{
@@ -339,7 +339,7 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 			$goals = $auto_goals['low_goal'][$team];
 			$auto_low_avg[$i] = array_sum($goals) / count($goals);
 			$auto_low_sum[$i] = array_sum($goals);
-		}		
+		}
 		//Fouls
 		$regFoulsSum[] = 0;
 		$regFoulsAvg[] = 0;
@@ -357,7 +357,7 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 			$techFoulsAvg[$i] = array_sum($fouls) / count($fouls);
 			$techFoulsSum[$i] = array_sum($fouls);
 		}
-		
+
 		$i++;
 	}
 
@@ -381,9 +381,9 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 		'xLabels' => $legend,
 		'legend' => array('Total Fouls','Total Tech Fouls','Avg. Fouls per Match','Avg. Tech Fouls per Match')
 	);
-	
-	
-	
+
+
+
 	$highGoalDiff = array();
 	$lowGoalDiff = array();
 	foreach($highGoalTimes as $team=>$data)
@@ -434,10 +434,10 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 		'xLabels' => array_keys($lowGoalTimesAvg),
 		'legend' => array('Average Time for High Goal')
 	);
-	
-	
-	
-	
+
+
+
+
 	$data = array(
 		'individualScores'=>$individualScoresArr,
 		'averageScores'=>$totalScoresArr,
@@ -459,13 +459,13 @@ function get2016ReportData($event, $allTeams, $teamAccount)
 function get2017ReportData($event, $allTeams, $teamAccount)
 {
 	global $db;
-	
+
 	$year = 2017;
-	
+
 	$data = array();
 	$teamsQuery = array();
 	$legend = array();
-	$teamsQueryString = '';	
+	$teamsQueryString = '';
 	if(isset($allTeams))
 	{
 		foreach($allTeams as $team)
@@ -478,7 +478,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 			$teamsQueryString = 'AND ('.implode(' OR ',$teamsQuery).')';
 		}
 	}
-	
+
 	$allindividualScores = array();
 	$autoPoints = array();
 	$telePoints = array();
@@ -494,10 +494,10 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 	$matchStartArr = getMatchData_start($current_match, $teamAccount);
 	$matchStart = $matchStartArr['match_start'];
 	$query = 'select match_data.*, SUBSTRING_INDEX(`match_key`, "_", 1) as event_key FROM match_data WHERE team_account="'.$teamAccount.'" '.$teamsQueryString.' HAVING event_key = "'.$event.'" ORDER BY timestamp ASC';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	if($result->num_rows > 0)
+	$matchRows = db_select($query);
+	if(count($matchRows) > 0)
 	{
-		while($row=$result->fetch_assoc())
+		foreach($matchRows as $row)
 		{
 			$team_number = $row['team_number'];
 			$match = $row['match_key'];
@@ -513,7 +513,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 			$multiplier = isset($attr_1) && $attr_1!=0 ? (int)$attr_1:1;
 
 			$duringAuto = $timestamp-$matchStart <= 15;
-			
+
 			if(!isset($allindividualScores[$team_number][$match]))
 			{
 				$allindividualScores[$team_number][$match] = 0;
@@ -561,8 +561,8 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 			if(!isset($gearsDelivered[$team_number][$match]))
 			{
 				$gearsDelivered[$team_number][$match] = 0;
-			}			
-			
+			}
+
 			if($action == 'high_goal' && $duringAuto)
 			{
 				$allindividualScores[$team_number][$match] += $pointValues['auto_high_goal']*$multiplier;
@@ -576,7 +576,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 				$telePoints[$team_number][$match] += $pointValues['tele_high_goal']*$multiplier;
 				$tele_goals['high_goal'][$team_number][$match] += 1*$multiplier;
 				$num_goals['high_goal'][$team_number][$match] += 1*$multiplier;
-				
+
 			}
 			elseif($action == 'low_goal' && $duringAuto)
 			{
@@ -605,7 +605,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 			elseif($action == 'deliver_gear')
 			{
 				$gearsDelivered[$team_number][$match] += 1;
-			}		
+			}
 			elseif($action == 'foul')
 			{
 				$foulCounts['foul'][$team_number][$match] += 1;
@@ -616,7 +616,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 			}
 		}
 	}
-		
+
 	$teamList = sort($allTeams);
 	$numMatches = array();
 	$xLabels = array();
@@ -640,7 +640,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 		'scores' => $individualScores,
 		'xLabels' => $xLabels,
 	);
-	
+
 	// Average/Total Points
 	$averagePoints = array();
 	$sumPoints = array();
@@ -674,7 +674,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 	// Gears Delivered
 	$gears_delivered_sum = array();
 	$gears_delivered_avg = array();
-	
+
 	$i = 0;
 	foreach($allTeams as $team)
 	{
@@ -755,7 +755,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 			$goals = $num_goals['low_goal'][$team];
 			$low_avg[$i] = array_sum($goals) / count($goals);
 			$low_sum[$i] = array_sum($goals);
-		}		
+		}
 		//Fouls
 		$regFoulsSum[] = 0;
 		$regFoulsAvg[] = 0;
@@ -782,7 +782,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 			$gears_delivered_avg[$i] = array_sum($gears) / count($gears);
 			$gears_delivered_sum[$i] = array_sum($gears);
 		}
-		
+
 		$i++;
 	}
 
@@ -826,7 +826,7 @@ function get2017ReportData($event, $allTeams, $teamAccount)
 		'xLabels' => $legend,
 		'legend' => array('Total Gears Delivered','Avg. Gears Delivered per Match')
 	);
-	
+
 		$data = array(
 		'individualScores'=>$individualScoresArr,
 		'autoPoints'=>$autoPointsArr,

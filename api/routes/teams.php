@@ -16,7 +16,7 @@ $app->group('/teams', function () use ($app) {
 		$query = 'UPDATE team_memberships SET privs='.db_quote($formData['privs']).' WHERE user_id='.db_quote($formData['id']).'';
 		$result = db_query($query);
 		if(!$result) {
-			return $response->withJson(errorHandle(mysqli_error($db), $query));
+			return $response->withJson(db_error($query));
 		}
 		return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>'Team Privs updated for '.$formData['userInfo']['full_name']));
 	});
@@ -42,7 +42,7 @@ $app->group('/teams', function () use ($app) {
 													"pending")';
 			$result = db_query($query);
 			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
+				return $response->withJson(db_error($query));
 			}
 			$name = $authToken->data->full_name;
 			$email = $authToken->data->email;
@@ -75,7 +75,7 @@ $app->group('/teams', function () use ($app) {
 			$query = 'UPDATE team_memberships SET status="joined", privs="read" WHERE user_id='.db_quote($formData['id']).' AND team_number='.db_quote($team).'';
 			$result = db_query($query);
 			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
+				return $response->withJson(db_error($query));
 			}
 			$msg_data = array(
 				'users' => array($formData['id']),
@@ -140,9 +140,9 @@ $app->group('/teams', function () use ($app) {
 			verifyUser($formData['user_id'], $authToken->data->id, $die = true);
 
 			$query = 'insert into team_accounts (`team_number`, `contact_id`, `current_event`, `logo`, `background_header`, `background_body`, `font_color_header`, `font_color_body`) VALUES ('.db_quote($formData['team_number']).', "", NULL, "", "", "", "", "")';
-			$result = $db->query($query);
+			$result = db_query($query);
 			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
+				return $response->withJson(db_error($query));
 			}
 			$id = uniqid();
 			$query = 'insert into team_memberships (id, team_number, user_id, privs, status) VALUES
@@ -151,9 +151,9 @@ $app->group('/teams', function () use ($app) {
 													'.db_quote($formData['user_id']).',
 													"admin",
 													"joined")';
-			$result = $db->query($query);
+			$result = db_query($query);
 			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
+				return $response->withJson(db_error($query));
 			}
 			$teamInfo = getTeamInfoByUser($formData['user_id']);
 			return $response->withJson(array('status'=>true, 'type'=>'success', 'msg'=>'You have successfully registered Team '.$formData['team_number'].'.', 'teamInfo'=>$teamInfo));
@@ -214,17 +214,12 @@ $app->group('/teams', function () use ($app) {
 		$search = $request->getAttribute("search");
 		if(isset($search) && $search != '' && $search != 'undefined') {
 			$query = 'select * from teams where team_number LIKE "%'.$search.'%" OR nickname LIKE "%'.$search.'%" ORDER BY team_number ASC';
-			$result = $db->query($query);
-			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
-			}
-			if($result->num_rows > 0) {
-				while($row = $result->fetch_assoc()) {
+			$searchResults = db_select($query)
+			foreach($searchResults as $row) {
 					$temp = $row;
 					$temp['account_status'] = teamAccountStatus($row['team_number']);
 					$data[] = $temp;
 				}
-			}
 		}
 		return $response->withJson($data);
 	});
@@ -243,13 +238,9 @@ $app->group('/teams', function () use ($app) {
 				$team = $teamInfo['team_number'];
 			}
 			$query = 'select teams.*, team_accounts.* from teams INNER JOIN team_accounts ON teams.team_number=team_accounts.team_number WHERE teams.team_number="'.$team.'"';
-			$result = $db->query($query);
-			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
-			}
-			if($result->num_rows > 0) {
-				$row = $result->fetch_assoc();
-				$data = $row;
+			$teamSearch = db_select_single($query);
+			if(!is_null($teamSearch)) {
+				$data = $teamSearch;
 				$data['membership'] = getTeamMembership($team);
 			}
 			return $response->withJson($data);
@@ -263,13 +254,9 @@ $app->group('/teams', function () use ($app) {
 				$response->withJson($data);
 			}
 			$query = 'select * from teams INNER JOIN team_accounts ON teams.team_number=team_accounts.team_number WHERE teams.team_number="'.$team.'"';
-			$result = $db->query($query);
-			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
-			}
-			if($result->num_rows > 0) {
-				$row = $result->fetch_assoc();
-				$data = array('status'=>true, 'msg'=>$row, 'active'=>true);
+			$result = db_select_single($query);
+			if(!is_null($result)) {
+				$data = array('status'=>true, 'msg'=>$result, 'active'=>true);
 			}
 			return $response->withJson($data);
 		});
@@ -287,14 +274,10 @@ $app->group('/teams', function () use ($app) {
 		foreach($teamsArr as $team)
 		{
 			$query = 'select * from teams WHERE team_number = "'.$team.'"';
-			$result = $db->query($query);
-			if(!$result) {
-				return $response->withJson(errorHandle(mysqli_error($db), $query));
-			}
-			if($result->num_rows > 0)
+			$result = db_select_single($quer);
+			if(!is_null($result))
 			{
-				$row = $result->fetch_assoc();
-				$data[] = $row;
+				$data[] = $result;
 			}
 		}
 		return $response->withJson($data);

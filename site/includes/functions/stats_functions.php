@@ -97,12 +97,12 @@ function getMatchDataStats($match_key, $teamAccount)
 	$matchStart = $matchStartArr['match_start'];
 
 	$query = 'select match_data.*, SUBSTRING_INDEX(`match_key`, "_", 1) as event_key FROM match_data WHERE match_key = "'.$match_key.'" AND team_account="'.$teamAccount.'" ORDER BY timestamp ASC';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	if($result->num_rows > 0)
+	$dataRows = db_select($query)
+	if(count($dataRows) > 0)
 	{
 		if($year == 2016)
 		{
-			while($row=$result->fetch_assoc())
+			foreach($dataRows as $row)
 			{
 				$team_number = $row['team_number'];
 				$match = $row['match_key'];
@@ -166,7 +166,7 @@ function getMatchDataStats($match_key, $teamAccount)
 		}
 		elseif($year == 2017)
 		{
-			while($row=$result->fetch_assoc())
+			foreach($dataRows as $row)
 			{
 				$team_number = $row['team_number'];
 				$match = $row['match_key'];

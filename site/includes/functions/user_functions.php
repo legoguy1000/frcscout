@@ -193,8 +193,8 @@ function removeTeamMembership($userId, $team)
 {
 	global $db;
 	$query = 'DELETE FROM team_memberships WHERE user_id="'.mysqli_real_escape_string($db, $userId).'" AND team_number="'.mysqli_real_escape_string($db, $team).'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	return true;
+	$result = db_query($query);
+	return $result;
 }
 
 function getGcmKey()
@@ -272,12 +272,11 @@ function checkNotificationPreference($user_id, $type)
 		'push' => true
 	);
 	$query = 'select notification_preferences.* from notification_preferences WHERE notification_preferences.user_id="'.mysqli_real_escape_string($db, $user_id).'"';
-	$result = $db->query($query) or die(errorHandle(mysqli_error($db),$query));
-	if($result->num_rows > 0)
+	$preferences = $db_select_single($query);
+	if(!is_null($preferences))
 	{
-		$row = $result->fetch_assoc();
-		$data['email'] = $row[$type.'-email'] == 1 ? true:false;
-		$data['push'] = $row[$type.'-push'] == 1 ? true:false;
+		$data['email'] = $preferences[$type.'-email'] == 1 ? true:false;
+		$data['push'] = $preferences[$type.'-push'] == 1 ? true:false;
 	}
 	return $data;
 }
